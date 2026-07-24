@@ -32,7 +32,7 @@ const SKILLS = [
   {
     "id": "ios-cicd",
     "slug": "unity-ios-cicd",
-    "area": "ci",
+    "area": "build",
     "status": "planned",
     "verified": "not yet",
     "blurb": "Self-hosted Actions runner → Fastlane → TestFlight",
@@ -74,7 +74,7 @@ const SKILLS = [
   {
     "id": "profiling",
     "slug": "unity-profiling",
-    "area": "perf",
+    "area": "optimization",
     "status": "planned",
     "verified": "not yet",
     "blurb": "Capture and diff profiler traces without opening the editor",
@@ -115,6 +115,6 @@ const SKILLS = [
   }
 ];
 
-const AREAS = ["all","assets","core","ci","testing","build","perf"];
+const AREAS = ["all","assets","core","build","testing","optimization"];
 const STATUSES = ["all","verified","planned"];
 const RANK = { verified: 0, draft: 1, planned: 2 };

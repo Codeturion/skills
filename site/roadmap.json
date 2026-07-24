@@ -1,8 +1,74 @@
 [
-  { "id": "ios-cicd", "slug": "unity-ios-cicd", "area": "ci", "status": "planned", "verified": "not yet", "blurb": "Self-hosted Actions runner → Fastlane → TestFlight", "detail": "Self-hosted GitHub Actions runner on a Mac, Fastlane signing, TestFlight upload: the whole path from commit to a build on your phone.", "sections": "not written yet", "requires": "unity-headless-cli", "notes": "In the pipeline." },
-  { "id": "playmode", "slug": "unity-playmode-automation", "area": "testing", "status": "planned", "verified": "not yet", "blurb": "Headless play-mode smoke tests with real input injection", "detail": "Runs play mode in batchmode and drives it with synthesized input for smoke tests that exercise the real game loop.", "sections": "not written yet", "requires": "unity-headless-cli", "notes": "In the pipeline." },
-  { "id": "build-pipeline", "slug": "unity-build-pipeline", "area": "build", "status": "planned", "verified": "not yet", "blurb": "Reproducible player builds from the CLI, per-platform", "detail": "The goal is one command that produces a byte-identical player given the same commit and editor version.", "sections": "not written yet", "requires": "unity-headless-cli", "notes": "On the roadmap." },
-  { "id": "profiling", "slug": "unity-profiling", "area": "perf", "status": "planned", "verified": "not yet", "blurb": "Capture and diff profiler traces without opening the editor", "detail": "Capture .raw traces in CI and diff frame timings between commits.", "sections": "not written yet", "requires": "unity-headless-cli", "notes": "On the roadmap." },
-  { "id": "asset-hygiene", "slug": "unity-asset-hygiene", "area": "assets", "status": "planned", "verified": "not yet", "blurb": "Find unreferenced assets, bad import settings, texture bloat", "detail": "Mostly a set of eval scripts already run by hand; needs to be written up with real numbers.", "sections": "not written yet", "requires": "unity-headless-cli", "notes": "On the roadmap." },
-  { "id": "upm-registry", "slug": "unity-upm-registry", "area": "core", "status": "planned", "verified": "not yet", "blurb": "Private UPM registry and package publishing from CI", "detail": "Covers hosting a scoped registry and publishing packages on tag.", "sections": "not written yet", "requires": "unity-headless-cli", "notes": "On the roadmap." }
+  {
+    "id": "ios-cicd",
+    "slug": "unity-ios-cicd",
+    "area": "build",
+    "status": "planned",
+    "verified": "not yet",
+    "blurb": "Self-hosted Actions runner → Fastlane → TestFlight",
+    "detail": "Self-hosted GitHub Actions runner on a Mac, Fastlane signing, TestFlight upload: the whole path from commit to a build on your phone.",
+    "sections": "not written yet",
+    "requires": "unity-headless-cli",
+    "notes": "In the pipeline."
+  },
+  {
+    "id": "playmode",
+    "slug": "unity-playmode-automation",
+    "area": "testing",
+    "status": "planned",
+    "verified": "not yet",
+    "blurb": "Headless play-mode smoke tests with real input injection",
+    "detail": "Runs play mode in batchmode and drives it with synthesized input for smoke tests that exercise the real game loop.",
+    "sections": "not written yet",
+    "requires": "unity-headless-cli",
+    "notes": "In the pipeline."
+  },
+  {
+    "id": "build-pipeline",
+    "slug": "unity-build-pipeline",
+    "area": "build",
+    "status": "planned",
+    "verified": "not yet",
+    "blurb": "Reproducible player builds from the CLI, per-platform",
+    "detail": "The goal is one command that produces a byte-identical player given the same commit and editor version.",
+    "sections": "not written yet",
+    "requires": "unity-headless-cli",
+    "notes": "On the roadmap."
+  },
+  {
+    "id": "profiling",
+    "slug": "unity-profiling",
+    "area": "optimization",
+    "status": "planned",
+    "verified": "not yet",
+    "blurb": "Capture and diff profiler traces without opening the editor",
+    "detail": "Capture .raw traces in CI and diff frame timings between commits.",
+    "sections": "not written yet",
+    "requires": "unity-headless-cli",
+    "notes": "On the roadmap."
+  },
+  {
+    "id": "asset-hygiene",
+    "slug": "unity-asset-hygiene",
+    "area": "assets",
+    "status": "planned",
+    "verified": "not yet",
+    "blurb": "Find unreferenced assets, bad import settings, texture bloat",
+    "detail": "Mostly a set of eval scripts already run by hand; needs to be written up with real numbers.",
+    "sections": "not written yet",
+    "requires": "unity-headless-cli",
+    "notes": "On the roadmap."
+  },
+  {
+    "id": "upm-registry",
+    "slug": "unity-upm-registry",
+    "area": "core",
+    "status": "planned",
+    "verified": "not yet",
+    "blurb": "Private UPM registry and package publishing from CI",
+    "detail": "Covers hosting a scoped registry and publishing packages on tag.",
+    "sections": "not written yet",
+    "requires": "unity-headless-cli",
+    "notes": "On the roadmap."
+  }
 ]
