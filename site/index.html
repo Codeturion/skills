@@ -105,7 +105,7 @@
         <input id="search" placeholder="Search skills — press / to focus" aria-label="Search skills">
       </div>
       <button id="copy-all" class="btn-plain">copy all verified</button>
-      <a class="gh" href="https://github.com/Codeturion/skills" rel="noopener">github ↗</a>
+      <a class="gh" id="gh-link" href="https://github.com/Codeturion/skills" rel="noopener">github ↗</a>
     </div>
   </header>
 
@@ -127,7 +127,7 @@
 
   <footer>
     <div class="wrap foot">
-      <a href="https://github.com/Codeturion/skills" rel="noopener">github.com/Codeturion/skills</a><span>MIT</span><span>issues and corrections welcome</span><span class="right">/ to search · ↵ to copy</span>
+      <a href="https://github.com/Codeturion/skills" rel="noopener">github.com/Codeturion/skills</a><span>MIT</span><span>issues and corrections welcome</span><a href="https://www.fuatcankoseoglu.com" rel="noopener">fuatcankoseoglu.com ↗</a><span class="right">/ to search · ↵ to copy</span>
     </div>
   </footer>
 
@@ -289,6 +289,15 @@ function openFromHash() {
 }
 window.addEventListener("hashchange", openFromHash);
 openFromHash();
+
+fetch("https://api.github.com/repos/Codeturion/skills")
+  .then(r => r.ok ? r.json() : null)
+  .then(d => {
+    if (!d) return;
+    document.getElementById("gh-link").textContent =
+      "github ★ " + d.stargazers_count + " ⑂ " + d.forks_count;
+  })
+  .catch(() => {});
 </script>
 
 </body>
