@@ -15,6 +15,10 @@
   @keyframes caret-rot {
     from { transform: rotate(0deg); }
   }
+  .detail.closing { animation: detail-out 140ms ease-in forwards; }
+  @keyframes detail-out {
+    to { opacity: 0; transform: translateY(-4px); }
+  }
 
   /* 2. Row hover tint */
   .row-head { transition: background 120ms ease; }
@@ -49,10 +53,4 @@
     0% { background: var(--chip-active-bg); }
     100% { background: var(--row-open-bg); }
   }
-}
-
-/* Site-level motion switch (header). Overrides everything above. */
-:root[data-motion="off"] * {
-  animation: none !important;
-  transition: none !important;
 }

@@ -67,9 +67,20 @@ function render() {
       (avail ? '<button class="btn-copy prompt' + (promptDone ? ' done' : '') + '">' + promptLabel + '</button>' : '') +
       '<button class="btn-copy' + (done ? " done" : "") + '"' + (avail ? "" : " disabled") + '>' + btnLabel + '</button></span>';
     head.onclick = () => {
-      state.open = isOpen ? null : s.id;
-      history.replaceState(null, "", isOpen ? location.pathname + location.search : "#" + s.slug);
-      render();
+      if (isOpen) {
+        state.open = null;
+        history.replaceState(null, "", location.pathname + location.search);
+        const dEl = row.querySelector(".detail");
+        const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (dEl && !reduced) {
+          dEl.classList.add("closing");
+          setTimeout(render, 140);
+        } else render();
+      } else {
+        state.open = s.id;
+        history.replaceState(null, "", "#" + s.slug);
+        render();
+      }
     };
     head.querySelector(".btn-copy:not(.prompt)").onclick = (e) => { e.stopPropagation(); if (avail) copyText(s.id, installText(s)); };
     const rowPrompt = head.querySelector(".btn-copy.prompt");
@@ -155,11 +166,4 @@ themePick.value = document.documentElement.dataset.theme || "rider";
 themePick.addEventListener("change", () => {
   document.documentElement.dataset.theme = themePick.value;
   localStorage.setItem("theme", themePick.value);
-});
-
-const motionPick = document.getElementById("motion-pick");
-motionPick.value = document.documentElement.dataset.motion || "on";
-motionPick.addEventListener("change", () => {
-  document.documentElement.dataset.motion = motionPick.value;
-  localStorage.setItem("motion", motionPick.value);
 });

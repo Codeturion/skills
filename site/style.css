@@ -122,5 +122,6 @@
     .cols span:nth-child(2), .cols span:nth-child(3), .cols span:nth-child(4),
     .row-head .blurb, .row-head .verified, .row-head .area, .row-head .btn-copy.prompt { display: none; }
     .detail { grid-template-columns: minmax(0, 1fr); padding-left: 0.9rem; }
+    .detail pre { white-space: pre-wrap; overflow-wrap: anywhere; }
     .meta .mobile-only { display: block; }
   }
