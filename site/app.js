@@ -147,3 +147,10 @@ fetch("https://api.github.com/repos/Codeturion/skills")
       "github ★ " + d.stargazers_count + " ⑂ " + d.forks_count;
   })
   .catch(() => {});
+
+const themePick = document.getElementById("theme-pick");
+themePick.value = document.documentElement.dataset.theme || "rider";
+themePick.addEventListener("change", () => {
+  document.documentElement.dataset.theme = themePick.value;
+  localStorage.setItem("theme", themePick.value);
+});
