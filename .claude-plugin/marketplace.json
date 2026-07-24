@@ -1,0 +1,30 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "skills",
+  "description": "Codeturion's Unity agent skills: production workflows, terminal-first and headless, every command verified on real projects before it ships.",
+  "owner": {
+    "name": "Codeturion"
+  },
+  "plugins": [
+    {
+      "name": "unity-addressables",
+      "description": "Unity Addressables end to end, fully headless: setup, groups and labels, leak-safe runtime loading, content builds in CI, and remote content with updates from any static host.",
+      "author": {
+        "name": "Codeturion"
+      },
+      "category": "development",
+      "source": "./skills/unity-addressables",
+      "homepage": "https://github.com/Codeturion/skills"
+    },
+    {
+      "name": "unity-headless-cli",
+      "description": "Set up a Unity project to be driven headless from the terminal: adds com.unity.pipeline, writes docs/unity-cli-ref.md, and wires CLAUDE.md to point at it. No GUI editor, no MCP server.",
+      "author": {
+        "name": "Codeturion"
+      },
+      "category": "development",
+      "source": "./skills/unity-headless-cli",
+      "homepage": "https://github.com/Codeturion/skills"
+    }
+  ]
+}
