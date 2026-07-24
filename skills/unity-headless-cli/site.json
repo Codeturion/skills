@@ -1,0 +1,12 @@
+{
+  "id": "headless-cli",
+  "slug": "unity-headless-cli",
+  "area": "core",
+  "status": "verified",
+  "verified": "2026-07 · 6000.3",
+  "blurb": "Drive a Unity project over SSH: no GUI editor, no MCP server",
+  "detail": "Gives you a unity command that creates GameObjects, edits assets and runs test suites, plus eval for throwing live C# at the editor: 200 to 600 ms round trip, no domain reload. The part worth reading is keeping the editor alive between calls without deadlocking on the compile pipeline.",
+  "sections": "bootstrap · unity <cmd> · eval / eval_file · run_tests · custom [CliCommand] tools",
+  "requires": "nothing, start here",
+  "notes": "Verified on macOS with Unity 6000.3. Windows is untested."
+}

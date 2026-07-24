@@ -1,0 +1,12 @@
+{
+  "id": "addressables",
+  "slug": "unity-addressables",
+  "area": "assets",
+  "status": "verified",
+  "verified": "2026-07 · 6000.3",
+  "blurb": "Groups, leak-safe loading, CI content builds, remote content off a static host",
+  "detail": "Setup through shipping: groups and labels, loading that releases its handles, content builds in CI, and remote content off a plain static host so you can push an update without a store release. Scan recipes for dead entries and duplicate addresses live in test-cases, next to the 2.x→3.x upgrade note you want before you upgrade.",
+  "sections": "setup · groups-and-labels · runtime-loading · build-and-ci · remote-content · test-cases",
+  "requires": "unity-headless-cli (for the scan recipes)",
+  "notes": "Covers Addressables 2.9 and 3.1."
+}
