@@ -274,8 +274,12 @@ window.addEventListener("keydown", (e) => {
 });
 
 function openFromHash() {
-  const slug = decodeURIComponent(location.hash.slice(1));
-  const s = SKILLS.find(x => x.slug === slug);
+  const slug = decodeURIComponent(location.hash.slice(1)).toLowerCase().trim();
+  const s = slug && (
+    SKILLS.find(x => x.slug === slug) ||
+    SKILLS.find(x => x.slug.startsWith(slug) || slug.startsWith(x.slug)) ||
+    SKILLS.find(x => x.slug.includes(slug))
+  );
   if (!s) { render(); return; }
   state.query = ""; state.area = "all"; state.status = "all"; state.open = s.id;
   document.getElementById("search").value = "";
