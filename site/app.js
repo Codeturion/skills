@@ -59,10 +59,10 @@ function render() {
       '<span class="cell-name"><span class="caret">' + (isOpen ? "▾" : "▸") + '</span>' +
       '<span class="sname' + (avail ? " avail" : "") + '">' + esc(s.name) + '</span></span>' +
       '<span class="blurb">' + esc(s.blurb) + '</span>' +
-      '<span class="verified">' + esc(s.verified) + '</span>' +
+      '<span class="verified' + (avail ? ' has-date' : '') + '">' + esc(s.verified) + '</span>' +
       '<span class="area">' + esc(s.area) + '</span>' +
       '<span class="cell-act">' +
-      (avail ? '<button class="btn-copy prompt">' + promptLabel + '</button>' : '') +
+      (avail ? '<button class="btn-copy prompt' + (promptDone ? ' done' : '') + '">' + promptLabel + '</button>' : '') +
       '<button class="btn-copy' + (done ? " done" : "") + '"' + (avail ? "" : " disabled") + '>' + btnLabel + '</button></span>';
     head.onclick = () => {
       state.open = isOpen ? null : s.id;
@@ -82,8 +82,8 @@ function render() {
         (avail ? '<pre>' + esc(installText(s)) + '</pre>' : '') +
         '<div class="detail-actions">' +
         (avail
-          ? '<button class="btn-big">' + btnLabel + '</button>' +
-            '<button class="btn-big prompt">' + (promptDone ? "copied ✓" : "copy prompt") + '</button>'
+          ? '<button class="btn-big' + (done ? ' done' : '') + '">' + btnLabel + '</button>' +
+            '<button class="btn-big prompt' + (promptDone ? ' done' : '') + '">' + (promptDone ? "copied ✓" : "copy prompt") + '</button>'
           : '') +
         '<a class="src-link" href="' + s.repo + '" rel="noopener">source ↗</a></div></div>' +
         '<div class="meta">' +

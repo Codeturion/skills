@@ -47,13 +47,14 @@
   .sname.avail { color: #CF8E6D; }
   .blurb { color: #9DA0A8; font-size: 0.78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .verified { color: #7A7E85; font-size: 0.74rem; font-variant-numeric: tabular-nums; }
-  .area { color: #6F737A; font-size: 0.72rem; }
+  .verified.has-date { color: #299999; }
+  .area { color: #C77DBB; font-size: 0.72rem; }
   .cell-act { display: flex; justify-content: flex-end; gap: 0.4rem; }
   .btn-copy.prompt { border-color: #4E5157; background: transparent; color: #BCBEC4; }
   .btn-copy.prompt:hover { border-color: #7A7E85; }
   .btn-copy { font-size: 0.7rem; padding: 0.32rem 0.6rem; border-radius: 6px; min-height: 32px; min-width: 7.6rem; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; cursor: pointer; border: 1px solid #3574F0; background: #3574F0; color: #FFF; }
-  .btn-copy.done { background: #2A5CC4; }
-  .btn-copy:disabled { cursor: default; border-color: #3A3C40; background: transparent; color: #6F737A; }
+  .btn-copy.done, .btn-big.done { background: #6AAB73; border-color: #6AAB73; color: #1E1F22; }
+  .btn-copy:disabled { cursor: default; border-color: rgba(242,197,92,0.35); background: transparent; color: #F2C55C; }
 
   .detail { padding: 0.2rem 0.9rem 1.2rem 2.1rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 17rem); gap: 1.6rem; }
   .detail p { margin: 0 0 0.9rem; color: #BCBEC4; font-size: 0.82rem; max-width: 42rem; }
