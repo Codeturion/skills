@@ -4,8 +4,8 @@
   "area": "core",
   "status": "verified",
   "verified": "2026-07 · 6000.3",
-  "blurb": "Drive a Unity project over SSH: no GUI editor, no MCP server",
-  "detail": "Gives you a unity command that creates GameObjects, edits assets and runs test suites, plus eval for throwing live C# at the editor: 200 to 600 ms round trip, no domain reload. The part worth reading is keeping the editor alive between calls without deadlocking on the compile pipeline.",
+  "blurb": "Set up Unity's official CLI and drive the editor over SSH, no GUI, no MCP server",
+  "detail": "Installs and wires up Unity's official CLI (com.unity.pipeline) so a terminal or an agent can drive the editor: create GameObjects, edit assets, run tests, eval live C# with 200 to 600 ms round trips. The part worth reading is keeping the editor alive between calls without deadlocking on the compile pipeline.",
   "sections": "bootstrap · unity <cmd> · eval / eval_file · run_tests · custom [CliCommand] tools",
   "requires": "nothing, start here",
   "notes": "Verified on macOS with Unity 6000.3. Windows is untested."
