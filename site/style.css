@@ -63,7 +63,7 @@
   .gh { font-size: 0.75rem; color: var(--muted); }
 
   .hero { padding: 2rem 1.4rem 1.2rem; }
-  .hero h1 { font-size: 1.05rem; font-weight: 500; margin: 0 0 0.4rem; color: var(--text); }
+  .hero h1 { font-size: 1.2rem; font-weight: 700; margin: 0 0 0.4rem; color: var(--text); }
   .hero p { margin: 0; color: var(--muted); font-size: 0.85rem; max-width: 44rem; }
   .hero .hl { color: var(--accent); }
 
