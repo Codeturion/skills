@@ -1,0 +1,52 @@
+/* All motion for the site lives here. Approved set, 2026-07-25:
+   row expand, caret rotate, hover tint, chip transitions, copied pulse,
+   theme crossfade, filter fade-in, deep-link landing flash.
+   Everything is wrapped in prefers-reduced-motion so users who disable
+   animations get a fully static page. */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* 1. Row expand: detail slides open, caret rotates ▸ to open position */
+  .detail { animation: detail-in 180ms ease-out; }
+  @keyframes detail-in {
+    from { opacity: 0; transform: translateY(-4px); }
+  }
+  .row-head.open .caret { animation: caret-rot 180ms ease-out; transform: rotate(90deg); }
+  @keyframes caret-rot {
+    from { transform: rotate(0deg); }
+  }
+
+  /* 2. Row hover tint */
+  .row-head { transition: background 120ms ease; }
+
+  /* 3. Chips */
+  .chip { transition: border-color 120ms ease, color 120ms ease, background 120ms ease; }
+
+  /* 4. Copy buttons: state fade + press pulse on copied */
+  .btn-copy, .btn-big, .btn-plain, .src-link {
+    transition: border-color 120ms ease, background 150ms ease, color 150ms ease;
+  }
+  .btn-copy.done, .btn-big.done { animation: press 150ms ease-out; }
+  @keyframes press {
+    0% { transform: scale(0.97); }
+    100% { transform: scale(1); }
+  }
+
+  /* 5. Theme switch crossfade */
+  body, header, footer, .detail pre, input, select.btn-plain {
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+
+  /* 6. Filter/search: surviving rows fade in (#rows gets .fx only on filter changes) */
+  #rows.fx .row { animation: row-in 150ms ease-out; }
+  @keyframes row-in {
+    from { opacity: 0; }
+  }
+
+  /* 7. Deep link arrival: opened row flashes once */
+  .row-head.landed { animation: landed-flash 600ms ease-out; }
+  @keyframes landed-flash {
+    0% { background: var(--chip-active-bg); }
+    100% { background: var(--row-open-bg); }
+  }
+}

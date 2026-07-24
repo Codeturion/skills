@@ -32,7 +32,7 @@ function render() {
       const b = document.createElement("button");
       b.className = "chip" + (cur === v ? " on" : "");
       b.textContent = v;
-      b.onclick = () => { set(v); state.open = null; render(); };
+      b.onclick = () => { set(v); state.open = null; state.fx = true; render(); };
       host.appendChild(b);
     }
   };
@@ -41,6 +41,8 @@ function render() {
 
   const list = visible();
   const host = document.getElementById("rows");
+  host.classList.toggle("fx", state.fx === true);
+  state.fx = false;
   host.innerHTML = "";
   for (const s of list) {
     const isOpen = state.open === s.id;
@@ -56,7 +58,7 @@ function render() {
     const head = document.createElement("div");
     head.className = "row-head" + (isOpen ? " open" : "");
     head.innerHTML =
-      '<span class="cell-name"><span class="caret">' + (isOpen ? "▾" : "▸") + '</span>' +
+      '<span class="cell-name"><span class="caret">▸</span>' +
       '<span class="sname' + (avail ? " avail" : "") + '">' + esc(s.name) + '</span></span>' +
       '<span class="blurb">' + esc(s.blurb) + '</span>' +
       '<span class="verified' + (avail ? ' has-date' : '') + '">' + esc(s.verified) + '</span>' +
@@ -107,7 +109,7 @@ function render() {
 }
 
 document.getElementById("search").addEventListener("input", (e) => {
-  state.query = e.target.value; state.open = null; render();
+  state.query = e.target.value; state.open = null; state.fx = true; render();
 });
 document.getElementById("copy-all").addEventListener("click", () => {
   copyText("__all", SKILLS.filter(s => s.status === "verified").map(installText).join("\n"));
@@ -134,7 +136,7 @@ function openFromHash() {
   document.getElementById("search").value = "";
   render();
   const head = document.querySelector(".row-head.open");
-  if (head) head.scrollIntoView({ block: "center" });
+  if (head) { head.scrollIntoView({ block: "center" }); head.classList.add("landed"); }
 }
 window.addEventListener("hashchange", openFromHash);
 openFromHash();
