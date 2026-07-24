@@ -1,10 +1,12 @@
-# Codeturion Skills
+# Skills
 
 [![License: MIT](https://img.shields.io/github/license/Codeturion/skills)](LICENSE)
 [![Unity](https://img.shields.io/badge/Unity-6000.x-000000?logo=unity)](https://unity.com)
 [![Site](https://img.shields.io/badge/browse-skills.fuatcankoseoglu.com-3574F0)](https://skills.fuatcankoseoglu.com)
 
-Unity agent skills ([skills.sh](https://skills.sh) standard): production workflows, terminal-first and headless. Browse them at **[skills.fuatcankoseoglu.com](https://skills.fuatcankoseoglu.com)**.
+**Browse and install from the website: [skills.fuatcankoseoglu.com](https://skills.fuatcankoseoglu.com)**
+
+Unity agent skills ([skills.sh](https://skills.sh) standard): production workflows, terminal-first and headless.
 
 The bar for everything in this repo: **nothing ships unverified**. Every command, snippet, and behavior claim is executed on a real Unity editor before it is written down, and each skill carries its verification record in its `references/test-cases.md`.
 
