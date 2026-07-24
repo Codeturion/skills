@@ -51,7 +51,7 @@
   .cell-act { display: flex; justify-content: flex-end; gap: 0.4rem; }
   .btn-copy.prompt { border-color: #4E5157; background: transparent; color: #BCBEC4; }
   .btn-copy.prompt:hover { border-color: #7A7E85; }
-  .btn-copy { font-size: 0.7rem; padding: 0.32rem 0.6rem; border-radius: 5px; min-height: 32px; white-space: nowrap; cursor: pointer; border: 1px solid #3574F0; background: #3574F0; color: #FFF; }
+  .btn-copy { font-size: 0.7rem; padding: 0.32rem 0.6rem; border-radius: 6px; min-height: 32px; min-width: 7.6rem; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; cursor: pointer; border: 1px solid #3574F0; background: #3574F0; color: #FFF; }
   .btn-copy.done { background: #2A5CC4; }
   .btn-copy:disabled { cursor: default; border-color: #3A3C40; background: transparent; color: #6F737A; }
 
@@ -59,11 +59,11 @@
   .detail p { margin: 0 0 0.9rem; color: #BCBEC4; font-size: 0.82rem; max-width: 42rem; }
   .detail pre { margin: 0 0 0.7rem; background: #2B2D30; border: 1px solid #393B40; border-radius: 6px; padding: 0.65rem 0.85rem; font-size: 0.74rem; line-height: 1.7; color: #BCBEC4; overflow-x: auto; }
   .detail-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .btn-big { font-size: 0.74rem; padding: 0.45rem 0.9rem; border-radius: 6px; min-height: 40px; cursor: pointer; border: 1px solid #3574F0; background: #3574F0; color: #FFF; }
+  .btn-big { font-size: 0.74rem; padding: 0.45rem 0.9rem; border-radius: 6px; min-height: 40px; min-width: 8.5rem; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #3574F0; background: #3574F0; color: #FFF; }
   .btn-big:disabled { cursor: default; border-color: #3A3C40; background: transparent; color: #6F737A; }
   .btn-big.prompt { background: #2B2D30; border-color: #4E5157; color: #BCBEC4; }
   .btn-big.prompt:hover { border-color: #7A7E85; }
-  .src-link { font-size: 0.74rem; padding: 0.45rem 0.9rem; border: 1px solid #4E5157; border-radius: 6px; background: #2B2D30; color: #BCBEC4; min-height: 40px; display: inline-flex; align-items: center; }
+  .src-link { font-size: 0.74rem; padding: 0.45rem 0.9rem; border: 1px solid #4E5157; border-radius: 6px; background: #2B2D30; color: #BCBEC4; min-height: 40px; min-width: 8.5rem; display: inline-flex; align-items: center; justify-content: center; }
   .src-link:hover { border-color: #7A7E85; color: #BCBEC4; }
   .meta { font-size: 0.74rem; display: flex; flex-direction: column; gap: 0.9rem; padding-top: 0.2rem; }
   .meta .k { letter-spacing: 0.12em; text-transform: uppercase; color: #6F737A; margin-bottom: 0.2rem; }
