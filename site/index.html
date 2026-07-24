@@ -10,7 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
-  body { margin: 0; background: #1E1F22; color: #BCBEC4; font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; line-height: 1.6; }
+  html { font-size: clamp(16px, 14.6px + 0.125vw, 19px); }
+  body { margin: 0; background: #1E1F22; color: #BCBEC4; font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.875rem; line-height: 1.6; }
   a { color: #548AF7; text-decoration: none; }
   a:hover { color: #C77DBB; }
   input { font-family: inherit; }
@@ -19,7 +20,10 @@
   button { font-family: inherit; }
 
   header { border-bottom: 1px solid #393B40; background: #2B2D30; position: sticky; top: 0; z-index: 20; }
+  .page { min-height: 100vh; display: flex; flex-direction: column; }
+  .page > main { flex: 1; width: 100%; }
   .wrap { max-width: 66rem; margin: 0 auto; padding: 0 1.4rem; }
+  @media (min-width: 1600px) { .wrap { max-width: 78rem; } }
   .bar { padding: 0.75rem 1.4rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
   .brand { font-weight: 700; font-size: 0.9rem; color: #BCBEC4; letter-spacing: 0.02em; }
   .brand .tick { color: #CF8E6D; }
@@ -89,7 +93,7 @@
 </head>
 <body>
 
-<div style="min-height: 100vh;">
+<div class="page">
 
   <header>
     <div class="wrap bar" style="padding-left: 1.4rem; padding-right: 1.4rem;">
@@ -218,7 +222,11 @@ function render() {
       '<span class="verified">' + esc(s.verified) + '</span>' +
       '<span class="area">' + esc(s.area) + '</span>' +
       '<span class="cell-act"><button class="btn-copy' + (done ? " done" : "") + '"' + (avail ? "" : " disabled") + '>' + btnLabel + '</button></span>';
-    head.onclick = () => { state.open = isOpen ? null : s.id; render(); };
+    head.onclick = () => {
+      state.open = isOpen ? null : s.id;
+      history.replaceState(null, "", isOpen ? location.pathname + location.search : "#" + s.slug);
+      render();
+    };
     head.querySelector(".btn-copy").onclick = (e) => { e.stopPropagation(); if (avail) copyText(s.id, installText(s)); };
     row.appendChild(head);
 
@@ -260,7 +268,19 @@ window.addEventListener("keydown", (e) => {
     if (s && s.status === "verified") copyText(s.id, installText(s));
   }
 });
-render();
+
+function openFromHash() {
+  const slug = decodeURIComponent(location.hash.slice(1));
+  const s = SKILLS.find(x => x.slug === slug);
+  if (!s) { render(); return; }
+  state.query = ""; state.area = "all"; state.status = "all"; state.open = s.id;
+  document.getElementById("search").value = "";
+  render();
+  const head = document.querySelector(".row-head.open");
+  if (head) head.scrollIntoView({ block: "center" });
+}
+window.addEventListener("hashchange", openFromHash);
+openFromHash();
 </script>
 
 </body>
