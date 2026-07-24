@@ -156,3 +156,10 @@ themePick.addEventListener("change", () => {
   document.documentElement.dataset.theme = themePick.value;
   localStorage.setItem("theme", themePick.value);
 });
+
+const motionPick = document.getElementById("motion-pick");
+motionPick.value = document.documentElement.dataset.motion || "on";
+motionPick.addEventListener("change", () => {
+  document.documentElement.dataset.motion = motionPick.value;
+  localStorage.setItem("motion", motionPick.value);
+});

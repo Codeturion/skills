@@ -40,7 +40,7 @@
   /* 6. Filter/search: surviving rows fade in (#rows gets .fx only on filter changes) */
   #rows.fx .row { animation: row-in 150ms ease-out; }
   @keyframes row-in {
-    from { opacity: 0; }
+    from { opacity: 0; transform: translateY(4px); }
   }
 
   /* 7. Deep link arrival: opened row flashes once */
@@ -49,4 +49,10 @@
     0% { background: var(--chip-active-bg); }
     100% { background: var(--row-open-bg); }
   }
+}
+
+/* Site-level motion switch (header). Overrides everything above. */
+:root[data-motion="off"] * {
+  animation: none !important;
+  transition: none !important;
 }
