@@ -70,6 +70,8 @@
   .detail-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .btn-big { font-size: 0.74rem; padding: 0.45rem 0.9rem; border-radius: 6px; min-height: 40px; cursor: pointer; border: 1px solid #3574F0; background: #3574F0; color: #FFF; }
   .btn-big:disabled { cursor: default; border-color: #3A3C40; background: transparent; color: #6F737A; }
+  .btn-big.prompt { background: #2B2D30; border-color: #4E5157; color: #BCBEC4; }
+  .btn-big.prompt:hover { border-color: #7A7E85; }
   .src-link { font-size: 0.74rem; padding: 0.45rem 0.9rem; border: 1px solid #4E5157; border-radius: 6px; background: #2B2D30; color: #BCBEC4; min-height: 40px; display: inline-flex; align-items: center; }
   .src-link:hover { border-color: #7A7E85; color: #BCBEC4; }
   .meta { font-size: 0.74rem; display: flex; flex-direction: column; gap: 0.9rem; padding-top: 0.2rem; }
@@ -102,7 +104,7 @@
       <span class="brand"><span class="tick">▮</span> Codeturion <span class="sub">/ unity skills</span></span>
       <div class="searchbox">
         <span class="glass">⌕</span>
-        <input id="search" placeholder="Search skills — press / to focus" aria-label="Search skills">
+        <input id="search" placeholder="Search skills, press / to focus" aria-label="Search skills">
       </div>
       <button id="copy-all" class="btn-plain">copy all verified</button>
       <a class="gh" id="gh-link" href="https://github.com/Codeturion/skills" rel="noopener">github ↗</a>
@@ -111,7 +113,7 @@
 
   <section class="wrap hero">
     <h1>Claude Code skills for driving Unity from a terminal.</h1>
-    <p>Every command in every skill was run against a real editor on a shipping project before it was written down — the traps are in there with the recipes. Install <span class="hl">unity-headless-cli</span> first; most of the rest assume it.</p>
+    <p>Every command in every skill was run against a real editor on a shipping project before it was written down. The traps are in there with the recipes. Install <span class="hl">unity-headless-cli</span> first; most of the rest assume it.</p>
   </section>
 
   <section class="wrap filters">
@@ -138,11 +140,11 @@ const REPO = "https://github.com/Codeturion/skills";
 const SKILLS = [
   {
     id: "headless-cli", name: "unity-headless-cli", area: "core", status: "verified",
-    blurb: "Drive a Unity project over SSH — no GUI editor, no MCP server",
+    blurb: "Drive a Unity project over SSH: no GUI editor, no MCP server",
     verified: "2026-07 · 6000.3", repo: REPO + "/tree/main/skills/unity-headless-cli",
-    detail: "Gives you a unity command that creates GameObjects, edits assets and runs test suites, plus eval for throwing live C# at the editor — 200–600 ms round trip, no domain reload. The part worth reading is keeping the editor alive between calls without deadlocking on the compile pipeline.",
+    detail: "Gives you a unity command that creates GameObjects, edits assets and runs test suites, plus eval for throwing live C# at the editor: 200 to 600 ms round trip, no domain reload. The part worth reading is keeping the editor alive between calls without deadlocking on the compile pipeline.",
     sections: "bootstrap · unity <cmd> · eval / eval_file · run_tests · custom [CliCommand] tools",
-    requires: "nothing — start here", notes: "Not tested on Windows. Someone should.",
+    requires: "nothing, start here", notes: "Not tested on Windows. Someone should.",
     slug: "unity-headless-cli",
   },
   {
@@ -154,12 +156,12 @@ const SKILLS = [
     requires: "unity-headless-cli (for the scan recipes)", notes: "Covers Addressables 2.9 and 3.1.",
     slug: "unity-addressables",
   },
-  { id: "ios-cicd", name: "unity-ios-cicd", area: "ci", status: "planned", blurb: "Self-hosted Actions runner → Fastlane → TestFlight", verified: "—", repo: REPO, detail: "Planned. Self-hosted GitHub Actions runner on a Mac, Fastlane signing, TestFlight upload — the whole path from commit to a build on your phone.", sections: "—", requires: "unity-headless-cli", notes: "Planned, nothing written.", slug: "unity-ios-cicd" },
-  { id: "playmode", name: "unity-playmode-automation", area: "testing", status: "planned", blurb: "Headless play-mode smoke tests with real input injection", verified: "—", repo: REPO, detail: "Planned. Runs play mode in batchmode and drives it with synthesized input for smoke tests that exercise the real game loop.", sections: "—", requires: "unity-headless-cli", notes: "Planned, nothing written.", slug: "unity-playmode-automation" },
-  { id: "build-pipeline", name: "unity-build-pipeline", area: "build", status: "planned", blurb: "Reproducible player builds from the CLI, per-platform", verified: "—", repo: REPO, detail: "Planned. The goal is one command that produces a byte-identical player given the same commit and editor version.", sections: "—", requires: "unity-headless-cli", notes: "Planned, nothing written.", slug: "unity-build-pipeline" },
-  { id: "profiling", name: "unity-profiling", area: "perf", status: "planned", blurb: "Capture and diff profiler traces without opening the editor", verified: "—", repo: REPO, detail: "Planned. Capture .raw traces in CI and diff frame timings between commits.", sections: "—", requires: "unity-headless-cli", notes: "Planned, nothing written.", slug: "unity-profiling" },
-  { id: "asset-hygiene", name: "unity-asset-hygiene", area: "assets", status: "planned", blurb: "Find unreferenced assets, bad import settings, texture bloat", verified: "—", repo: REPO, detail: "Planned. Mostly a set of eval scripts already run by hand; needs to be written up with real numbers.", sections: "—", requires: "unity-headless-cli", notes: "Planned, nothing written.", slug: "unity-asset-hygiene" },
-  { id: "upm-registry", name: "unity-upm-registry", area: "core", status: "planned", blurb: "Private UPM registry and package publishing from CI", verified: "—", repo: REPO, detail: "Planned. Covers hosting a scoped registry and publishing packages on tag.", sections: "—", requires: "unity-headless-cli", notes: "Planned, nothing written.", slug: "unity-upm-registry" },
+  { id: "ios-cicd", name: "unity-ios-cicd", area: "ci", status: "planned", blurb: "Self-hosted Actions runner → Fastlane → TestFlight", verified: "not yet", repo: REPO, detail: "Self-hosted GitHub Actions runner on a Mac, Fastlane signing, TestFlight upload: the whole path from commit to a build on your phone.", sections: "not written yet", requires: "unity-headless-cli", notes: "In the pipeline.", slug: "unity-ios-cicd" },
+  { id: "playmode", name: "unity-playmode-automation", area: "testing", status: "planned", blurb: "Headless play-mode smoke tests with real input injection", verified: "not yet", repo: REPO, detail: "Runs play mode in batchmode and drives it with synthesized input for smoke tests that exercise the real game loop.", sections: "not written yet", requires: "unity-headless-cli", notes: "In the pipeline.", slug: "unity-playmode-automation" },
+  { id: "build-pipeline", name: "unity-build-pipeline", area: "build", status: "planned", blurb: "Reproducible player builds from the CLI, per-platform", verified: "not yet", repo: REPO, detail: "The goal is one command that produces a byte-identical player given the same commit and editor version.", sections: "not written yet", requires: "unity-headless-cli", notes: "On the roadmap.", slug: "unity-build-pipeline" },
+  { id: "profiling", name: "unity-profiling", area: "perf", status: "planned", blurb: "Capture and diff profiler traces without opening the editor", verified: "not yet", repo: REPO, detail: "Capture .raw traces in CI and diff frame timings between commits.", sections: "not written yet", requires: "unity-headless-cli", notes: "On the roadmap.", slug: "unity-profiling" },
+  { id: "asset-hygiene", name: "unity-asset-hygiene", area: "assets", status: "planned", blurb: "Find unreferenced assets, bad import settings, texture bloat", verified: "not yet", repo: REPO, detail: "Mostly a set of eval scripts already run by hand; needs to be written up with real numbers.", sections: "not written yet", requires: "unity-headless-cli", notes: "On the roadmap.", slug: "unity-asset-hygiene" },
+  { id: "upm-registry", name: "unity-upm-registry", area: "core", status: "planned", blurb: "Private UPM registry and package publishing from CI", verified: "not yet", repo: REPO, detail: "Covers hosting a scoped registry and publishing packages on tag.", sections: "not written yet", requires: "unity-headless-cli", notes: "On the roadmap.", slug: "unity-upm-registry" },
 ];
 
 const AREAS = ["all", "core", "assets", "build", "ci", "testing", "perf"];
@@ -171,11 +173,15 @@ const state = { query: "", area: "all", status: "all", open: null, copied: null 
 function installText(s) {
   return "npx skills add Codeturion/skills --skill " + s.slug + "\n# or as a Claude Code plugin:\n/plugin marketplace add Codeturion/skills\n/plugin install " + s.slug + "@skills";
 }
+function promptText(s) {
+  return "Install the " + s.slug + " agent skill by running: npx skills add Codeturion/skills --skill " + s.slug + ". Then read its SKILL.md and use it for the next task I give you.";
+}
 function copyText(key, text) {
-  navigator.clipboard.writeText(text);
-  state.copied = key;
-  render();
-  setTimeout(() => { state.copied = null; render(); }, 1400);
+  navigator.clipboard.writeText(text).then(() => {
+    state.copied = key;
+    render();
+    setTimeout(() => { state.copied = null; render(); }, 1400);
+  }).catch(() => {});
 }
 function esc(t) {
   return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -235,10 +241,15 @@ function render() {
     if (isOpen) {
       const d = document.createElement("div");
       d.className = "detail";
+      const promptDone = state.copied === s.id + "-p";
       d.innerHTML =
         '<div><p>' + esc(s.detail) + '</p>' +
-        '<pre>' + esc(avail ? installText(s) : "not published yet") + '</pre>' +
-        '<div class="detail-actions"><button class="btn-big"' + (avail ? "" : " disabled") + '>' + btnLabel + '</button>' +
+        (avail ? '<pre>' + esc(installText(s)) + '</pre>' : '') +
+        '<div class="detail-actions">' +
+        (avail
+          ? '<button class="btn-big">' + btnLabel + '</button>' +
+            '<button class="btn-big prompt">' + (promptDone ? "copied ✓" : "copy prompt") + '</button>'
+          : '') +
         '<a class="src-link" href="' + s.repo + '" rel="noopener">source ↗</a></div></div>' +
         '<div class="meta">' +
         '<div class="mobile-only"><div class="k">verified</div><span class="v">' + esc(s.verified) + '</span></div>' +
@@ -246,7 +257,10 @@ function render() {
         '<div><div class="k">sections</div><span class="v">' + esc(s.sections) + '</span></div>' +
         '<div><div class="k">requires</div><span class="v">' + esc(s.requires) + '</span></div>' +
         '<div><div class="k">notes</div><span class="v">' + esc(s.notes) + '</span></div></div>';
-      d.querySelector(".btn-big").onclick = () => { if (avail) copyText(s.id, installText(s)); };
+      if (avail) {
+        d.querySelector(".btn-big").onclick = () => copyText(s.id, installText(s));
+        d.querySelector(".btn-big.prompt").onclick = () => copyText(s.id + "-p", promptText(s));
+      }
       row.appendChild(d);
     }
     host.appendChild(row);
