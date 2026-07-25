@@ -14,7 +14,7 @@ Handling rules that apply to all of them:
   Connect). Storing them on GitHub can go two ways; ask the user which
   they prefer.
 - **Ask about chat privacy before the first secret exists** (interview
-  question 8). The default is: values never enter the chat. Never ask
+  question 9). The default is: values never enter the chat. Never ask
   the user to paste a secret into the chat. Both ways below work
   without it: values move file -> GitHub or browser -> GitHub. If the
   user volunteers a value in the chat anyway, store it, tell them it
@@ -155,7 +155,16 @@ others, but it should still be random.
 How to get it: same as above, `openssl rand -base64 24`. It is never
 needed outside CI, so the user does not have to remember it.
 
-## 6. Optional: notification webhook
+## 6. Optional: remote content host credentials
+
+Only if the project ships remote Addressables content (interview
+question 8): `CONTENT_ACCESS_KEY_ID` and `CONTENT_SECRET_ACCESS_KEY`,
+an access key pair for the bucket the content lives in. The user
+creates it in their host's dashboard (S3: IAM access key scoped to the
+bucket; R2: R2 API token). Store both like every other secret. The
+upload step is in workflow-reference.md.
+
+## Optional: notification webhook
 
 If the user wants a chat message when a build finishes, add a webhook
 url (Slack or Discord) as a secret, for example `BUILD_WEBHOOK`, and

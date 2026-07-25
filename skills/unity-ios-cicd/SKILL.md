@@ -47,7 +47,13 @@ skip. Do not start before you have all the answers.
    `gh auth status`. If yes, you can store the GitHub secrets yourself
    with `gh secret set` and the user only creates the Apple-side values.
    If no, the user pastes each secret in the browser instead.
-8. **How private do they want the secret values?** Ask this straight
+8. **Does the project ship remote content?** Check, do not just ask:
+   look for Addressables in `Packages/manifest.json` and remote load
+   paths in the Addressables settings. If the project loads content
+   from a CDN or bucket, the build must also build and upload that
+   content, or the new binary can point at a catalog that does not
+   exist yet. See the remote content section below.
+9. **How private do they want the secret values?** Ask this straight
    out before any secret exists. Default and recommendation: values
    never enter the chat. The user saves each value to a local file (or
    pastes it in the browser) and you only run commands that read the
@@ -145,6 +151,28 @@ The complete workflow, with test gate and release notes generation, is in
 
 **Check:** the build appears in App Store Connect under TestFlight and
 installs on a phone.
+
+## Remote content (only if the interview found it)
+
+If the project uses Addressables with remote content, two extra pieces
+go into the same TestFlight workflow:
+
+1. **Build content with the player.** The build method calls
+   `AddressableAssetSettings.BuildPlayerContent` before `BuildPlayer`,
+   and fails the build if the content build reports an error. The
+   **unity-addressables** skill has the exact call and settings.
+2. **Upload content before the TestFlight upload.** The upload order is
+   not optional: **bundles first, catalog last**. A catalog that goes
+   up first can reference bundles that are not there yet, and every
+   fresh install in that window breaks. And the catalog must be served
+   with `Cache-Control: no-store`: it keeps the same filename while its
+   content changes, so an edge cache will happily serve a stale one.
+   Bundles are content-hashed and can cache forever.
+
+The generic upload step (any S3-compatible host) is in
+[references/workflow-reference.md](references/workflow-reference.md),
+with the host credentials handled like every other secret in
+[references/secrets-setup.md](references/secrets-setup.md).
 
 ## When something fails
 

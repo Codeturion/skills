@@ -54,8 +54,58 @@ public static class CIBuild
 ```
 
 If the project uses Addressables, build content before the player inside
-the same method (the **unity-addressables** skill covers that call and
-the remote-content upload step).
+the same method (the **unity-addressables** skill covers the call):
+
+```csharp
+AddressableAssetSettings.BuildPlayerContent(out AddressablesPlayerBuildResult addressablesResult);
+if (!string.IsNullOrEmpty(addressablesResult.Error))
+{
+    Debug.LogError($"Addressables build failed: {addressablesResult.Error}");
+    EditorApplication.Exit(1);
+    return;
+}
+```
+
+(Usings: `UnityEditor.AddressableAssets.Build` and
+`UnityEditor.AddressableAssets.Settings`.)
+
+## Remote content upload step (only for remote Addressables)
+
+Goes into testflight.yml between the export and the signing step, so a
+failed content upload never ships a binary pointing at missing content.
+Works with any S3-compatible host (S3, R2, GCS interop, MinIO) via
+rclone (`brew install rclone` on the runner). Secrets:
+`CONTENT_ACCESS_KEY_ID`, `CONTENT_SECRET_ACCESS_KEY`, and the endpoint.
+
+```yaml
+      - name: Push remote content (bundles first, catalog last)
+        if: ${{ !inputs.unsigned_check }}
+        env:
+          RCLONE_CONFIG_CDN_TYPE: s3
+          RCLONE_CONFIG_CDN_ACCESS_KEY_ID: ${{ secrets.CONTENT_ACCESS_KEY_ID }}
+          RCLONE_CONFIG_CDN_SECRET_ACCESS_KEY: ${{ secrets.CONTENT_SECRET_ACCESS_KEY }}
+          RCLONE_CONFIG_CDN_ENDPOINT: https://YOUR-S3-COMPATIBLE-ENDPOINT
+          BUCKET: your-content-bucket
+        run: |
+          SRC="$PWD/ServerData/iOS"
+          [ -d "$SRC" ] || { echo "::error::ServerData/iOS missing, Addressables remote build did not run"; exit 1; }
+          command -v rclone >/dev/null || { echo "::error::rclone not installed on runner"; exit 1; }
+          # bundles first, catalog last: a half-upload must never reference missing bundles
+          rclone copy "$SRC" "CDN:$BUCKET/iOS" --exclude "catalog*" --checksum -v
+          # catalog keeps its filename while content changes, so it must never
+          # cache at the edge; bundles are content-hashed and cache forever
+          rclone copy "$SRC" "CDN:$BUCKET/iOS" --include "catalog*" --checksum -v \
+            --header-upload "Cache-Control: no-store"
+```
+
+Two real-world traps this ordering prevents:
+
+- Catalog uploaded before its bundles: fresh installs in that window
+  resolve the new catalog and 404 on the bundles.
+- Catalog cached at the edge: players get the old catalog with the new
+  binary, which can stall first launch. Some ISPs and edges also block
+  or cache shared dev domains oddly, so put remote content behind a
+  domain you control.
 
 ## runner-smoke.yml (Phase 1)
 
