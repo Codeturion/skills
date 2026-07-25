@@ -71,6 +71,43 @@
     --planned-border: rgba(121,94,38,0.4);
   }
 
+  :root[data-theme="solarized-light"] {
+    --bg: #FDF6E3; --panel: #EEE8D5; --border: #DCD6C3; --border-soft: #EFE9D6;
+    --border-strong: #C9C3B0; --text: #586E75; --text-soft: #657B83; --muted: #839496;
+    --dim: #93A1A1; --accent: #CB4B16; --primary: #268BD2; --primary-soft: #1A6398;
+    --link: #268BD2; --purple: #D33682; --cyan: #2AA198; --amber: #B58900;
+    --green: #859900; --btn-fg: #FFFFFF;
+    --chip-active-bg: rgba(38,139,210,0.12); --row-open-bg: rgba(38,139,210,0.06);
+    --planned-border: rgba(181,137,0,0.45);
+  }
+  :root[data-theme="github-light"] {
+    --bg: #FFFFFF; --panel: #F6F8FA; --border: #D0D7DE; --border-soft: #EAEEF2;
+    --border-strong: #AFB8C1; --text: #1F2328; --text-soft: #424A53; --muted: #57606A;
+    --dim: #6E7781; --accent: #953800; --primary: #0969DA; --primary-soft: #0550AE;
+    --link: #0969DA; --purple: #8250DF; --cyan: #1B7C83; --amber: #9A6700;
+    --green: #1A7F37; --btn-fg: #FFFFFF;
+    --chip-active-bg: rgba(9,105,218,0.1); --row-open-bg: rgba(9,105,218,0.05);
+    --planned-border: rgba(154,103,0,0.4);
+  }
+  :root[data-theme="intellij-light"] {
+    --bg: #FFFFFF; --panel: #F7F8FA; --border: #D3D5DB; --border-soft: #EBECF0;
+    --border-strong: #C9CCD6; --text: #27282E; --text-soft: #494B57; --muted: #6C707E;
+    --dim: #8C8E96; --accent: #B45C1B; --primary: #3574F0; --primary-soft: #2751A3;
+    --link: #2470B3; --purple: #871094; --cyan: #00627A; --amber: #A46A1F;
+    --green: #067D17; --btn-fg: #FFFFFF;
+    --chip-active-bg: rgba(53,116,240,0.1); --row-open-bg: rgba(53,116,240,0.05);
+    --planned-border: rgba(164,106,31,0.45);
+  }
+  :root[data-theme="one-light"] {
+    --bg: #FAFAFA; --panel: #EAEAEB; --border: #DBDBDC; --border-soft: #E5E5E6;
+    --border-strong: #C9C9CA; --text: #383A42; --text-soft: #4F525E; --muted: #696C77;
+    --dim: #A0A1A7; --accent: #C18401; --primary: #4078F2; --primary-soft: #2A5CC8;
+    --link: #4078F2; --purple: #A626A4; --cyan: #0184BC; --amber: #986801;
+    --green: #50A14F; --btn-fg: #FFFFFF;
+    --chip-active-bg: rgba(64,120,242,0.1); --row-open-bg: rgba(64,120,242,0.05);
+    --planned-border: rgba(152,104,1,0.45);
+  }
+
   * { box-sizing: border-box; }
   ::selection { background: var(--chip-active-bg); }
   * { scrollbar-color: var(--border-strong) var(--bg); }
