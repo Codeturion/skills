@@ -25,6 +25,42 @@
     --chip-active-bg: rgba(14,99,156,0.3); --row-open-bg: rgba(14,99,156,0.15);
     --planned-border: rgba(220,220,170,0.35);
   }
+  :root[data-theme="monokai"] {
+    --bg: #272822; --panel: #2D2E27; --border: #3E3D32; --border-soft: #35362D;
+    --border-strong: #49483E; --text: #F8F8F2; --text-soft: #CFCFC2; --muted: #90918B;
+    --dim: #75715E; --accent: #A6E22E; --primary: #F92672; --primary-soft: #FF9BC2;
+    --link: #66D9EF; --purple: #AE81FF; --cyan: #66D9EF; --amber: #E6DB74;
+    --green: #A6E22E; --btn-fg: #FFFFFF;
+    --chip-active-bg: rgba(249,38,114,0.18); --row-open-bg: rgba(249,38,114,0.08);
+    --planned-border: rgba(230,219,116,0.35);
+  }
+  :root[data-theme="dracula"] {
+    --bg: #282A36; --panel: #343746; --border: #44475A; --border-soft: #3A3D4E;
+    --border-strong: #565A75; --text: #F8F8F2; --text-soft: #C3C7D1; --muted: #8E93A8;
+    --dim: #6272A4; --accent: #FFB86C; --primary: #BD93F9; --primary-soft: #D6BCFF;
+    --link: #8BE9FD; --purple: #FF79C6; --cyan: #8BE9FD; --amber: #F1FA8C;
+    --green: #50FA7B; --btn-fg: #21222C;
+    --chip-active-bg: rgba(189,147,249,0.2); --row-open-bg: rgba(189,147,249,0.09);
+    --planned-border: rgba(241,250,140,0.35);
+  }
+  :root[data-theme="solarized-dark"] {
+    --bg: #002B36; --panel: #073642; --border: #10485A; --border-soft: #073C4A;
+    --border-strong: #1A586B; --text: #93A1A1; --text-soft: #839496; --muted: #657B83;
+    --dim: #586E75; --accent: #CB4B16; --primary: #268BD2; --primary-soft: #7FBEE8;
+    --link: #268BD2; --purple: #D33682; --cyan: #2AA198; --amber: #B58900;
+    --green: #859900; --btn-fg: #FFFFFF;
+    --chip-active-bg: rgba(38,139,210,0.18); --row-open-bg: rgba(38,139,210,0.08);
+    --planned-border: rgba(181,137,0,0.4);
+  }
+  :root[data-theme="one-dark"] {
+    --bg: #282C34; --panel: #21252B; --border: #3E4451; --border-soft: #333842;
+    --border-strong: #4B5263; --text: #ABB2BF; --text-soft: #9CA3B0; --muted: #7F848E;
+    --dim: #5C6370; --accent: #D19A66; --primary: #61AFEF; --primary-soft: #A8D3FF;
+    --link: #61AFEF; --purple: #C678DD; --cyan: #56B6C2; --amber: #E5C07B;
+    --green: #98C379; --btn-fg: #21252B;
+    --chip-active-bg: rgba(97,175,239,0.18); --row-open-bg: rgba(97,175,239,0.08);
+    --planned-border: rgba(229,192,123,0.4);
+  }
   :root[data-theme="light"] {
     --bg: #FFFFFF; --panel: #F3F3F3; --border: #D4D4D4; --border-soft: #E5E5E5;
     --border-strong: #BFBFBF; --text: #333333; --text-soft: #555555; --muted: #6E6E6E;
