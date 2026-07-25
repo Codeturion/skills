@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="314" viewBox="0 0 1200 314" role="img" aria-label="Verified Unity skills: browse on skills.fuatcankoseoglu.com">
+  <rect width="1200" height="314" fill="#1E1F22"/>
+  <rect x="0.5" y="0.5" width="1199" height="313" fill="none" stroke="#393B40"/>
+  <circle cx="40" cy="36" r="7" fill="#ff5f56"/><circle cx="64" cy="36" r="7" fill="#ffbd2e"/><circle cx="88" cy="36" r="7" fill="#27c93f"/>
+  <text x="600" y="42" text-anchor="middle" font-family="SF Mono,Menlo,Consolas,monospace" font-size="16" fill="#9DA0A8">skills.fuatcankoseoglu.com</text>
+  <text x="48" y="90" font-family="SF Mono,Menlo,Consolas,monospace" font-size="26" font-weight="bold" fill="#BCBEC4">Verified Unity skills</text>
+  <text x="1152" y="90" text-anchor="end" font-family="SF Mono,Menlo,Consolas,monospace" font-size="15" fill="#9DA0A8">3 verified · 5 on the roadmap</text>
+  
+  <rect x="24" y="118" width="1152" height="44" fill="#26282B"/>
+  <text x="48" y="146" font-family="SF Mono,Menlo,Consolas,monospace" font-size="17" fill="#CF8E6D">unity-addressables</text>
+  <text x="330" y="146" font-family="SF Mono,Menlo,Consolas,monospace" font-size="15" fill="#9DA0A8">Groups, leak-safe loading, CI content builds, remote content off a static </text>
+  <text x="1010" y="146" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" fill="#6AAB73">✓ 2026-07 · 6000.3</text>
+  <rect x="24" y="162" width="1152" height="44" fill="#1E1F22"/>
+  <text x="48" y="190" font-family="SF Mono,Menlo,Consolas,monospace" font-size="17" fill="#CF8E6D">unity-headless-cli</text>
+  <text x="330" y="190" font-family="SF Mono,Menlo,Consolas,monospace" font-size="15" fill="#9DA0A8">Set up Unity's official CLI and drive the editor over SSH, no GUI, no MCP </text>
+  <text x="1010" y="190" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" fill="#6AAB73">✓ 2026-07 · 6000.3</text>
+  <rect x="24" y="206" width="1152" height="44" fill="#26282B"/>
+  <text x="48" y="234" font-family="SF Mono,Menlo,Consolas,monospace" font-size="17" fill="#CF8E6D">unity-ios-cicd</text>
+  <text x="330" y="234" font-family="SF Mono,Menlo,Consolas,monospace" font-size="15" fill="#9DA0A8">Self-hosted Actions runner → Fastlane → TestFlight, on a Mac you own</text>
+  <text x="1010" y="234" font-family="SF Mono,Menlo,Consolas,monospace" font-size="14" fill="#6AAB73">✓ 2026-07 · 6000.3</text>
+  <text x="600" y="288" text-anchor="middle" font-family="SF Mono,Menlo,Consolas,monospace" font-size="15" fill="#548AF7">browse cards, verification records and install commands on the site →</text>
+</svg>

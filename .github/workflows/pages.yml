@@ -3,7 +3,7 @@ name: Deploy site to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['site/**', 'skills/*/site.json', 'scripts/build-skills-js.mjs']
+    paths: ['site/**', 'skills/*/site.json', 'scripts/build-skills-js.mjs', 'scripts/build-banner.mjs']
   workflow_dispatch:
 
 permissions:
@@ -25,6 +25,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build skills.js from per-skill site.json
         run: node scripts/build-skills-js.mjs
+      - name: Build README banner (site/banner.svg)
+        run: node scripts/build-banner.mjs
       - name: Stamp asset version
         run: sed -i "s/__BUILD__/${GITHUB_SHA::7}/g" site/index.html
       - uses: actions/configure-pages@v5
