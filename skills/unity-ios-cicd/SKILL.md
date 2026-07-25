@@ -43,11 +43,16 @@ skip. Do not start before you have all the answers.
    Build Support is installed for that version.
 6. **Does the project already build for iOS from the editor?** If a manual
    build fails, fix that first. CI cannot fix a broken build.
+7. **Is the `gh` CLI installed and logged in?** Check with
+   `gh auth status`. If yes, you can store the GitHub secrets yourself
+   with `gh secret set` and the user only creates the Apple-side values.
+   If no, the user pastes each secret in the browser instead.
 
 Warn the user before starting: this setup creates real secrets (an App
 Store Connect API key, signing certificates). Each one is stored only in
 GitHub encrypted secrets or in a private encrypted repo. Nothing secret
-ever goes into the project repository. The full handling rules are in
+ever goes into the project repository or the chat. The full handling
+rules and both storage flows are in
 [references/secrets-setup.md](references/secrets-setup.md).
 
 ## Phase 1: Self-hosted runner

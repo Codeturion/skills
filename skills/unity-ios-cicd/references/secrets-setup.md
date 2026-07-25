@@ -6,14 +6,48 @@ get it, and how it is stored.
 
 Handling rules that apply to all of them:
 
-- Every secret lives in **GitHub encrypted secrets** (repo Settings ->
-  Secrets and variables -> Actions -> New repository secret). GitHub
-  encrypts them at rest and masks them in logs.
+- Every secret lives in **GitHub encrypted secrets**. GitHub encrypts
+  them at rest and masks them in logs.
 - Nothing secret is ever committed to the project repo. Certificates
   live in a separate private repo, and even there they are encrypted.
-- The agent never needs to see the secret values. Tell the user what to
-  copy and where to paste it. If a value does pass through the chat,
-  suggest revoking and recreating it when setup is done.
+- The user creates the values (only they can log into App Store
+  Connect). Storing them on GitHub can go two ways; ask the user which
+  they prefer.
+
+## How the secrets get onto GitHub
+
+**Way A: the agent sets them (recommended when `gh` is logged in).**
+The user never touches the GitHub UI and the values never enter the
+chat. For each secret, ask the user to save the value to a temp file
+(or pipe it), then run:
+
+```bash
+gh secret set ASC_KEY_CONTENT -R YOURORG/YOURREPO < AuthKey_XXXX.p8
+gh secret set ASC_KEY_ID -R YOURORG/YOURREPO --body "ABC123DEFG"
+rm -f AuthKey_XXXX.p8   # remove the local copy once it is stored
+```
+
+Passwords the skill invents (`MATCH_PASSWORD`, `CI_KEYCHAIN_PASSWORD`)
+need no user step at all: generate and store in one pipe, then show the
+user the value once so they can save it in their password manager
+(`MATCH_PASSWORD` matters, see section 4):
+
+```bash
+openssl rand -base64 24 | tee /dev/tty | gh secret set MATCH_PASSWORD -R YOURORG/YOURREPO
+```
+
+Check `gh auth status` first. If `gh` is missing or logged into the
+wrong account, fall back to Way B.
+
+**Way B: the user pastes them in the browser.** Repo Settings ->
+Secrets and variables -> Actions -> New repository secret. Name must
+match the table exactly, value is pasted as is (multiline is fine).
+
+Either way, verify at the end with `gh secret list -R YOURORG/YOURREPO`
+(names and dates only, values are never readable back).
+
+If a secret value does pass through the chat by accident, finish the
+setup, then suggest revoking and recreating that one.
 
 ## 1. App Store Connect API key (3 secrets)
 
@@ -70,12 +104,21 @@ How to get it (run on any machine):
 ssh-keygen -t ed25519 -f match_deploy_key -N "" -C "match deploy key"
 ```
 
-1. In the **certs repo**: Settings -> Deploy keys -> Add deploy key.
-   Paste the content of `match_deploy_key.pub`. Check **Allow write
-   access** (match pushes new certs on the first run).
-2. GitHub secret `MATCH_DEPLOY_KEY` (in the **project repo**) = the
-   content of the private file `match_deploy_key`, all lines.
-3. Delete both local files after pasting.
+With `gh`, the agent can do the whole thing (Way A):
+
+```bash
+gh repo deploy-key add match_deploy_key.pub -R YOURORG/ios-certs \
+  --title "ci runner" --allow-write
+gh secret set MATCH_DEPLOY_KEY -R YOURORG/YOURREPO < match_deploy_key
+rm -f match_deploy_key match_deploy_key.pub
+```
+
+Write access is needed because match pushes new certs on the first run.
+
+By hand (Way B): certs repo Settings -> Deploy keys -> Add deploy key,
+paste `match_deploy_key.pub`, check **Allow write access**. Then create
+the `MATCH_DEPLOY_KEY` secret in the **project repo** with the content
+of the private file, all lines. Delete both local files after.
 
 The workflow writes this key to a temp file and points git at it via
 `GIT_SSH_COMMAND` (see workflow-reference.md).
