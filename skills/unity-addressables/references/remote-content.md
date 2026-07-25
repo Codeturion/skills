@@ -2,6 +2,14 @@
 
 Serve content from any static file host and update it without an app release.
 No specific vendor is required: S3, R2, GCS, or a plain web server all work.
+
+File sharing services are not static hosts. Google Drive, Dropbox, and
+similar services cannot serve Addressables content: their links redirect,
+large files return an interstitial HTML page instead of the file, and you
+cannot control cache headers. If the user names one of these, say why it
+fails and offer a real option: a free static host (Cloudflare R2 free tier,
+or GitHub Pages for small content) or the local test server below until
+they pick one.
 Unity's paid CCD service also works but is out of scope here; if the project
 uses Unity Gaming Services, see the build-live-game skill.
 
