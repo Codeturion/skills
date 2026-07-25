@@ -16,11 +16,14 @@ first step after checkout. Do not fix it by editing the runner plist, the
 fix disappears on runner reinstall.
 
 **Runner offline after reboot.** The service is a LaunchAgent, so it
-starts at login only. Enable automatic login on the build Mac, or the
-runner sits dead until someone logs in.
+starts at login only. On a dedicated build Mac, enable automatic login
+(and mind FileVault, see runner-setup.md). On a daily machine this is
+expected behavior: the runner comes back when the user logs in.
 
 **Builds fail at random points overnight.** The Mac slept mid-build.
-`sudo pmset -a sleep 0` and keep it on mains power.
+On a dedicated build Mac: `sudo pmset -a sleep 0` and mains power. On
+a daily machine in daily-machine mode: expected, trigger builds while
+the machine is awake instead.
 
 ## Keychain and signing
 
@@ -35,6 +38,12 @@ security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k <password>
 The beta lane in fastlane-reference.md already does this. If you still
 see the error, the lane ran against a stale keychain: delete the
 keychain db file and rerun (the lanes recreate it).
+
+**codesign complains about an ambiguous identity.** Several old CI
+keychains sit in the search list, each holding the same team's "Apple
+Distribution" identity. List them with `security list-keychains` and
+delete stale ones (`security delete-keychain <name>`); the lanes
+recreate the current one.
 
 **Keychain vanishes mid-build, or partition-list-style failures on a
 Mac with several runners.** Two repos share one keychain name. The
@@ -95,9 +104,12 @@ passes on zero tests protects nothing.
 **Runner disk fills up over time.** Three growers: the .ipa in
 `build/output`, an .xcarchive per run in
 `~/Library/Developer/Xcode/Archives` (the biggest one on a Mac that
-ships daily), and DerivedData. The workflow's cleanup step handles the
-first two; clear `~/Library/Developer/Xcode/DerivedData` when the disk
-gets tight. If
+ships daily), and DerivedData. The workflow's cleanup step handles
+`build/output` and saves the dSYM as an artifact first. Archives and
+DerivedData are manual: on a CI-only Mac, delete old archive folders
+when the disk gets tight (the dSYM artifacts make them safe to drop);
+on a daily machine never blanket-delete `Archives`, your other apps'
+archives live there too. If
 builds start failing oddly after months of stale workspace state, the
 reset is: delete the repo folder inside the runner's `_work` directory
 and let checkout rebuild it (costs one full reimport).

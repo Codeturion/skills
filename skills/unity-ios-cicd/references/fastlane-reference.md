@@ -66,9 +66,10 @@ platform :ios do
       name: KEYCHAIN_NAME,
       password: keychain_password,
       unlock: true,
-      # no auto-lock: a 3600s timeout can relock the keychain mid-codesign
-      # on a long cold-Library build and fail signing halfway through
-      timeout: false,
+      # 0 = no auto-lock: a 3600s timeout can relock the keychain
+      # mid-codesign on a long cold-Library build (the param is an Integer,
+      # false crashes the action)
+      timeout: 0,
       lock_when_sleeps: false
     )
 
@@ -81,6 +82,10 @@ platform :ios do
       keychain_name: KEYCHAIN_NAME,
       keychain_password: keychain_password
     )
+
+    # Same pre-approval as the beta lane, so a codesign straight off this
+    # keychain also works (see the beta lane for why log: false).
+    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{keychain_password.shellescape} ~/Library/Keychains/#{KEYCHAIN_NAME}-db > /dev/null", log: false)
   end
 
   desc "Sign the Unity-exported Xcode project and upload to TestFlight"
@@ -97,9 +102,10 @@ platform :ios do
       name: KEYCHAIN_NAME,
       password: keychain_password,
       unlock: true,
-      # no auto-lock: a 3600s timeout can relock the keychain mid-codesign
-      # on a long cold-Library build and fail signing halfway through
-      timeout: false,
+      # 0 = no auto-lock: a 3600s timeout can relock the keychain
+      # mid-codesign on a long cold-Library build (the param is an Integer,
+      # false crashes the action)
+      timeout: 0,
       lock_when_sleeps: false
     )
 

@@ -135,8 +135,10 @@ dead, or moving to a new Mac):
 cd ~/actions-runner-mygame
 ./svc.sh stop && ./svc.sh uninstall
 ./config.sh remove --token <fresh-token-from-the-runners-page>
-security delete-keychain ci-mygame   # the CI keychain
-sudo pmset -a sleep 1                # restore sleep (pick your old value)
+security delete-keychain ci-mygame   # your KEYCHAIN_NAME from the Fastfile
+sudo pmset -a sleep 10               # restore sleep (value is in MINUTES)
+# if Screen Sharing was enabled for the setup, turn it off again:
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
 ```
 
 Then: disable automatic login (System Settings -> Users & Groups),

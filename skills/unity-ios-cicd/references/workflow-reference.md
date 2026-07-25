@@ -293,13 +293,21 @@ jobs:
           bundle install
           bundle exec fastlane ios beta
 
-      - name: Clean build output (the .ipa is on TestFlight now; disk fills otherwise)
+      - name: Keep the dSYM, drop the rest (disk fills otherwise)
         if: ${{ always() && !inputs.unsigned_check }}
         run: |
+          # The dSYM is the only way to symbolicate TestFlight crash logs.
+          # Keep it as a workflow artifact, then clear the heavy output.
+          mkdir -p build/dsym && cp -R build/output/*.app.dSYM.zip build/dsym/ 2>/dev/null || true
           rm -rf build/output
-          # build_app also leaves an .xcarchive per run; on a CI-only Mac
-          # these are pure disk growth
-          rm -rf ~/Library/Developer/Xcode/Archives/*
+
+      - name: Upload dSYM artifact
+        if: ${{ always() && !inputs.unsigned_check }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsym
+          path: build/dsym
+          if-no-files-found: ignore
 
       # Payload below is Discord's schema. For Slack, send {"text": "..."}
       # instead.

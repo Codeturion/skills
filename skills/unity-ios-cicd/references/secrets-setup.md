@@ -156,6 +156,7 @@ With `gh`, the agent can do the whole thing (Way A):
 gh repo deploy-key add match_deploy_key.pub -R YOURORG/ios-certs \
   --title "ci runner" --allow-write
 gh secret set MATCH_DEPLOY_KEY -R YOURORG/YOURREPO < match_deploy_key
+gh secret list -R YOURORG/YOURREPO   # confirm before deleting the key files
 rm -f match_deploy_key match_deploy_key.pub
 ```
 

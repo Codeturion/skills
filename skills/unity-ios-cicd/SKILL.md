@@ -16,7 +16,9 @@ check you can run. Do them in order. Do not skip the checks.
 
 Set expectations with the user before starting: a first-time setup is
 about half a day end to end, and the secrets phase alone can take an
-hour. The build Mac stays on and awake around the clock.
+hour. A dedicated build Mac stays on and awake around the clock; a
+daily machine can instead run in daily-machine mode (builds only while
+logged in, see runner-setup).
 
 ## Requirements
 
@@ -53,24 +55,31 @@ skipped. Run the commands over SSH or in a terminal on the build Mac.
 4. **Unity licensed on this machine?** Batchmode needs an activated
    license and fails with "No valid Unity license" without one.
    Signing into Unity Hub needs a GUI once. Sitting at the Mac: just
-   open Hub and sign in. Headless Mac: enable Screen Sharing over SSH
-   first (System Settings is itself a GUI, so use the command line):
+   open Hub and sign in. Headless Mac: you need one remote GUI
+   session. In order of reliability:
 
-   ```bash
-   sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart \
-     -activate -configure -access -on -restart -agent
-   # allow plain VNC clients (needed from Windows/Linux):
-   sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart \
-     -configure -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw <a-password>
-   ```
+   - Enable the Screen Sharing service over SSH:
+     `sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist`
+     and connect from another Mac (Finder, Cmd+K,
+     `vnc://<mac-name>.local`, log in with the Mac account).
+   - From Windows or Linux, try any VNC client against that service.
+     Honest warning: recent macOS restricts the legacy VNC mode
+     third-party clients need (the old `kickstart -setvnclegacy` route
+     is unreliable, caps passwords at 8 characters, and puts them in
+     shell history), and a session can come up view-only. If typing
+     does not work, use the next line.
+   - The fallback that always works: attach a display and keyboard to
+     the Mac once.
 
-   Then connect from another Mac (Finder, Cmd+K,
-   `vnc://<mac-name>.local`) or from Windows/Linux with any VNC client
-   (RealVNC, TigerVNC). Use that one GUI session for everything GUI in
-   this checklist (Hub sign-in, automatic login in Phase 1). Sign in to
-   Hub (Personal), or activate with the licensing client or `-serial`
-   (Pro). Verify by running any `-batchmode -quit` command and checking
-   the log.
+   These remote-desktop steps are the one part of this skill not
+   verified end to end on the reference machine; treat them as a map,
+   not a guarantee, and turn Screen Sharing off again when done
+   (teardown section in
+   [references/runner-setup.md](references/runner-setup.md)).
+   Use the one GUI session for everything GUI in this checklist (Hub
+   sign-in, automatic login in Phase 1). Sign in to Hub (Personal), or
+   activate with the licensing client or `-serial` (Pro). Verify by
+   running any `-batchmode -quit` command and checking the log.
 5. **Project opens on this machine?** Open the project once (or run a
    batchmode import) so `Library/` builds and packages resolve.
 
@@ -180,13 +189,18 @@ secrets. The step is part of the main workflow behind a
 ## Phase 4: Signing
 
 This is the phase where users get stuck, so follow the references
-closely. Two parts:
+closely. Three parts:
 
 1. **Collect the secrets with the user.** Walk them through creating the
    App Store Connect API key, the private certificates repo, the deploy
    key, and the two passwords. Click-by-click guide:
    [references/secrets-setup.md](references/secrets-setup.md).
-2. **Run the one-time signing bootstrap.** A `setup_signing` Fastlane lane
+2. **Pre-check the certificate limit.** Apple allows two active
+   distribution certificates per team. Before the bootstrap, have the
+   user count theirs at developer.apple.com -> Certificates. At the
+   limit already? See the `setup_signing` entry in troubleshooting
+   (import the existing cert instead of generating).
+3. **Run the one-time signing bootstrap.** A `setup_signing` Fastlane lane
    creates a dedicated CI keychain, then lets fastlane match generate the
    distribution certificate and provisioning profile into the encrypted
    certs repo. It runs from a manual workflow, not from a local terminal,
@@ -266,9 +280,9 @@ from keychain errors to PATH problems to stale `Library/` state.
 - Deep Addressables work (groups, loading, hosting choices). The remote
   content section above covers only what the build pipeline needs; the
   **unity-addressables** skill covers the rest.
-- CocoaPods post-processing. Projects with Firebase or ad SDKs (EDM4U)
-  need `pod install` between export and signing; that step is not
-  included here.
+- CocoaPods post-processing. Projects with Firebase or ad SDKs (EDM4U,
+  the External Dependency Manager for Unity) need `pod install` between
+  export and signing; that step is not included here.
 - App Store release. This pipeline ends at TestFlight. Promotion to the
   store is a manual decision.
 - Intel Macs and GitHub-hosted macOS runners. Hosted runners start cold
