@@ -47,6 +47,14 @@ skip. Do not start before you have all the answers.
    `gh auth status`. If yes, you can store the GitHub secrets yourself
    with `gh secret set` and the user only creates the Apple-side values.
    If no, the user pastes each secret in the browser instead.
+8. **How private do they want the secret values?** Ask this straight
+   out before any secret exists. Default and recommendation: values
+   never enter the chat. The user saves each value to a local file (or
+   pastes it in the browser) and you only run commands that read the
+   file. Only if the user says they are fine pasting values into the
+   chat may you accept them there, and then remind them at the end
+   which values passed through and how to rotate them. Never ask the
+   user to paste a secret into the chat yourself.
 
 Warn the user before starting: this setup creates real secrets (an App
 Store Connect API key, signing certificates). Each one is stored only in

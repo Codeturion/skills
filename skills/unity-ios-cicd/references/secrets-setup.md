@@ -13,6 +13,13 @@ Handling rules that apply to all of them:
 - The user creates the values (only they can log into App Store
   Connect). Storing them on GitHub can go two ways; ask the user which
   they prefer.
+- **Ask about chat privacy before the first secret exists** (interview
+  question 8). The default is: values never enter the chat. Never ask
+  the user to paste a secret into the chat. Both ways below work
+  without it: values move file -> GitHub or browser -> GitHub. If the
+  user volunteers a value in the chat anyway, store it, tell them it
+  passed through the conversation, and show them how to rotate it
+  (section 7).
 
 ## How the secrets get onto GitHub
 
@@ -154,6 +161,20 @@ If the user wants a chat message when a build finishes, add a webhook
 url (Slack or Discord) as a secret, for example `BUILD_WEBHOOK`, and
 keep the notify step in the workflow. Skip it otherwise, the pipeline
 does not need it.
+
+## 7. Rotating a secret
+
+If a value leaked (pasted in a chat, in a log, on a screen share),
+rotate it. None of these hurt the pipeline for more than a minute:
+
+- **ASC API key**: revoke it on the Users and Access -> Integrations
+  page, generate a new one, update the three `ASC_*` secrets.
+- **Deploy key**: remove it from the certs repo, generate a new pair,
+  add the new public key, update `MATCH_DEPLOY_KEY`.
+- **`MATCH_PASSWORD`**: run `fastlane match change_password`, then
+  update the secret.
+- **`CI_KEYCHAIN_PASSWORD`**: just set a new value; the lanes rebuild
+  the keychain from scratch every run.
 
 ## Checklist before Phase 4
 
