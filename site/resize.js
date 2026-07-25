@@ -11,15 +11,18 @@
   try { saved = JSON.parse(localStorage.getItem("colWidths")) || {}; } catch { saved = {}; }
   for (const k in saved) if (LIMITS[k]) root.style.setProperty("--col-" + k, saved[k] + "px");
 
+  const headerIndex = { skill: 0, verified: 2, area: 3 };
+  const headers = document.querySelectorAll(".cols > span");
   document.querySelectorAll(".grip").forEach((g) => {
     const col = g.dataset.col;
+    const dir = Number(g.dataset.dir) || 1;
     if (!LIMITS[col]) return;
     g.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       const startX = e.clientX;
-      const startW = g.parentElement.getBoundingClientRect().width;
+      const startW = headers[headerIndex[col]].getBoundingClientRect().width;
       const move = (ev) => {
-        const w = Math.round(Math.min(LIMITS[col].max, Math.max(LIMITS[col].min, startW + ev.clientX - startX)));
+        const w = Math.round(Math.min(LIMITS[col].max, Math.max(LIMITS[col].min, startW + dir * (ev.clientX - startX))));
         root.style.setProperty("--col-" + col, w + "px");
         saved[col] = w;
       };
