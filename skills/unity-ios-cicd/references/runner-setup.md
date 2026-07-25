@@ -49,6 +49,12 @@ enable automatic login (System Settings -> Users & Groups) and stop the
 Mac from sleeping (System Settings -> Energy, or
 `sudo pmset -a sleep 0 displaysleep 10`).
 
+Be honest with the user about what this means: automatic login means
+anyone at the machine is in that account without a password, and the
+runner keeps the Mac awake around the clock. Fine for a build box in a
+drawer, worth a thought on a daily machine (FileVault plus a locked
+screen still protects a stolen machine either way).
+
 ## 4. The PATH trap (read this)
 
 The runner service starts from launchd. launchd does not run
@@ -87,7 +93,9 @@ Workflows then run `bundle install && bundle exec fastlane ...`. Never
 
 ## 6. Smoke workflow
 
-Add this and run it from the Actions tab before anything else:
+Add this and run it before anything else. To run it: repo page on
+github.com -> **Actions** tab -> pick the workflow on the left -> **Run
+workflow** button.
 
 ```yaml
 name: runner-smoke
@@ -113,4 +121,8 @@ never starts, the labels in `runs-on` do not match the runner's labels
   fork PR could run code on your Mac. If the repo must be public,
   restrict Actions so workflows do not run on fork PRs
   (Settings -> Actions -> General).
+- Anyone with push access to the repo can edit a workflow and run
+  arbitrary code on the Mac, and read the secrets. Fine solo; with
+  collaborators, protect the workflows with environment rules or
+  required reviews.
 - The runner user account needs no admin rights for builds.

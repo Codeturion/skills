@@ -181,6 +181,9 @@ jobs:
 name: TestFlight
 
 on:
+  # Once the pipeline is trusted, uncomment to also ship on tags:
+  # push:
+  #   tags: ['ios-*']
   workflow_dispatch:
     inputs:
       unsigned_check:
@@ -209,6 +212,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           clean: false # keep Library/ between runs, a full reimport costs ~30 min
+          fetch-depth: 0 # release notes read git log; a shallow clone has 1 commit
 
       - name: Add Homebrew tools to PATH (launchd services skip ~/.zprofile)
         run: |

@@ -92,5 +92,32 @@ manually in between. The lane pulls
 the `concurrency` group in the workflow so CI cannot race itself.
 
 **API key works for some calls, fails others.** The key's role is too
-low. App Manager covers everything this pipeline does. Developer role
-does not.
+low. App Manager covers everything this pipeline does on the reference
+setup. Developer role does not. If `setup_signing` still gets a 403 on
+certificate creation with App Manager, recreate the key with Admin,
+that call is the pickiest one in the whole flow.
+
+**match clones the certs repo but errors about a missing branch.** A
+certs repo created with a README starts on `main`, while match may look
+for another branch. Create the certs repo empty (no README), or pass
+the branch explicitly with `git_branch` in the `match` call.
+
+**`increment_build_number` fails with "Apple Generic Versioning is not
+enabled".** The action drives `agvtool`, which needs
+`VERSIONING_SYSTEM = apple-generic` in the Xcode project. Unity 6000.3
+exports set this up, older exports may not. Fix: set
+`CURRENT_PROJECT_VERSION` and `VERSIONING_SYSTEM` on the target, or
+write the build number with `update_info_plist` instead.
+
+**Auto release notes show only one commit.** The checkout was shallow.
+Set `fetch-depth: 0` on the checkout step, `git log` needs history.
+
+**Unity batchmode dies with "No valid Unity license".** The build Mac
+was never activated. Open Unity Hub once on that Mac and sign in, or
+activate Pro with the licensing client. See the fresh machine checklist
+in SKILL.md.
+
+**xcodebuild errors about the license or a missing iOS platform.**
+First run state. `sudo xcodebuild -license accept`, then
+`xcodebuild -runFirstLaunch`, then `xcodebuild -downloadPlatform iOS`
+(Xcode 15 and newer).

@@ -124,6 +124,8 @@ platform :ios do
       profile_name: profile_name
     )
 
+    # Answers the export compliance question. false is correct only for
+    # apps that use standard HTTPS and no custom crypto.
     set_info_plist_value(
       path: "build/ios/Info.plist",
       key: "ITSAppUsesNonExemptEncryption",
@@ -172,7 +174,9 @@ end
 - **Manual signing with the match profile**: Unity exports the project
   with automatic signing. `update_code_signing_settings` flips it to the
   exact cert and profile match installed, so the build does not depend
-  on Xcode's automatic magic working headless.
+  on Xcode's automatic magic working headless. Only the `Unity-iPhone`
+  target needs this; the `UnityFramework` target does not take a
+  provisioning profile.
 - **`ITSAppUsesNonExemptEncryption`**: without it every TestFlight build
   sits at "Missing Compliance" until someone answers the export question
   in the browser. Setting it to false is correct for apps that use only

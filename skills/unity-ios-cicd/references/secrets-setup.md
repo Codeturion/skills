@@ -1,6 +1,6 @@
 # Secrets: what to create, where to click, how each is handled
 
-Six secrets make signing and upload work. Walk the user through them one
+Seven secrets make signing and upload work. Walk the user through them one
 at a time, in this order. For each one this file says: what it is, how to
 get it, and how it is stored.
 
@@ -14,7 +14,7 @@ Handling rules that apply to all of them:
   Connect). Storing them on GitHub can go two ways; ask the user which
   they prefer.
 - **Ask about chat privacy before the first secret exists** (interview
-  question 9). The default is: values never enter the chat. Never ask
+  question 10). The default is: values never enter the chat. Never ask
   the user to paste a secret into the chat. Both ways below work
   without it: values move file -> GitHub or browser -> GitHub. If the
   user volunteers a value in the chat anyway, store it, tell them it
@@ -56,6 +56,27 @@ Either way, verify at the end with `gh secret list -R YOURORG/YOURREPO`
 If a secret value does pass through the chat by accident, finish the
 setup, then suggest revoking and recreating that one.
 
+## 0. The app record (not a secret, but do it first)
+
+Before any key exists, the app must exist in App Store Connect. Guide
+the user:
+
+1. First register the bundle id: developer.apple.com -> Certificates,
+   Identifiers & Profiles -> Identifiers -> **+** -> App IDs -> App.
+   Description: the app name. Bundle ID: **explicit**, reverse-DNS,
+   for example `com.studioname.gamename`. Capabilities can stay
+   default. Register.
+2. Then the app: appstoreconnect.apple.com -> My Apps -> **+** ->
+   New App. Platform iOS. Name: what players see, unique across the
+   whole App Store (add a word if taken). Bundle ID: pick the one just
+   registered. SKU: any internal code, `gamename-ios` is fine, users
+   never see it.
+3. Verify the match yourself: the bundle id in
+   `ProjectSettings/ProjectSettings.asset` (`applicationIdentifier`)
+   must equal the one just chosen, character for character. Fix Unity
+   Player Settings now if not. A mismatch shows up hours later as a
+   signing error.
+
 ## 1. App Store Connect API key (3 secrets)
 
 What it is: a .p8 key file that lets Fastlane talk to App Store Connect
@@ -69,7 +90,9 @@ How to get it:
 2. Click **+** (Generate API Key). Name: `ci`. Access: **App Manager**.
    Admin also works but grants more than needed.
 3. Download the `.p8` file. **The download works exactly once.** Store
-   the file somewhere safe (a password manager, not the repo).
+   the file somewhere safe (a password manager, not the repo). If the
+   file is lost, nothing is broken: revoke that key and generate a new
+   one, it takes a minute.
 4. Note the **Key ID** (on the key row) and the **Issuer ID** (top of
    the page).
 
@@ -158,7 +181,7 @@ needed outside CI, so the user does not have to remember it.
 ## 6. Optional: remote content host credentials
 
 Only if the project ships remote Addressables content (interview
-question 8): `CONTENT_ACCESS_KEY_ID` and `CONTENT_SECRET_ACCESS_KEY`,
+question 9): `CONTENT_ACCESS_KEY_ID` and `CONTENT_SECRET_ACCESS_KEY`,
 an access key pair for the bucket the content lives in. The user
 creates it in their host's dashboard (S3: IAM access key scoped to the
 bucket; R2: R2 API token). Store both like every other secret. The

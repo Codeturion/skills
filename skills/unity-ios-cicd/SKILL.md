@@ -5,22 +5,51 @@ description: Use when a Unity project needs iOS builds shipped automatically. Tu
 
 # Unity iOS CI/CD
 
-This skill sets up a full pipeline: push a commit, a Mac you own builds the
-game, signs it, and uploads it to TestFlight. No cloud build minutes, no
-manual Xcode work. The Mac can be the user's daily machine or a spare one.
+This skill sets up a full pipeline: trigger a workflow, a Mac you own
+builds the game, signs it, and uploads it to TestFlight. No cloud build
+minutes, no manual Xcode work. The Mac can be the user's daily machine or
+a spare one. The default trigger is a button in the Actions tab; a tag or
+push trigger is a one-line addition once the pipeline is trusted.
 
 The pipeline has five phases. Each phase works on its own and ends with a
 check you can run. Do them in order. Do not skip the checks.
 
+Set expectations with the user before starting: a first-time setup is
+about half a day end to end, and the secrets phase alone can take an
+hour. The build Mac stays on and awake around the clock.
+
 ## Requirements
 
-- A Mac with Xcode and a Unity editor that has iOS Build Support.
+- A Mac with Xcode and a Unity editor that has iOS Build Support. The
+  verified setup is Apple Silicon; on Intel, Homebrew lives in
+  `/usr/local` instead of `/opt/homebrew`, adjust the PATH lines.
 - A GitHub repository for the Unity project (private is fine).
 - An Apple Developer Program membership (paid, 99 USD/year). TestFlight
   does not work without it.
 - Admin access to App Store Connect for the API key step.
-- The build script step drives Unity from the command line. The
-  **unity-headless-cli** skill helps if the project is not set up for that.
+- This skill is self-contained: the build script and workflows it ships
+  need no other skill. The **unity-headless-cli** skill is useful on top
+  if you also want to drive the editor interactively from the terminal.
+
+## Step 0: Fresh machine checklist
+
+On a Mac that never built this project before, check these in order.
+Each one is a hard stop that fails with a confusing error later if
+skipped. Run the commands over SSH or in a terminal on the build Mac.
+
+1. **Homebrew installed?** `command -v brew`. If missing, install it
+   from brew.sh first (needs an admin user, one sudo prompt).
+2. **Xcode ready?** Run `sudo xcodebuild -license accept`, then
+   `xcodebuild -runFirstLaunch`. On Xcode 15 and newer the iOS platform
+   is a separate download: `xcodebuild -downloadPlatform iOS`. Verify
+   with `xcodebuild -version`.
+3. **Unity licensed on this machine?** Batchmode needs an activated
+   license and fails with "No valid Unity license" without one. Open
+   Unity Hub once on the build Mac and sign in (Personal), or activate
+   with the licensing client or `-serial` (Pro). Verify by running any
+   `-batchmode -quit` command and checking the log.
+4. **Project opens on this machine?** Open the project once (or run a
+   batchmode import) so `Library/` builds and packages resolve.
 
 ## Step 1: Interview the user
 
@@ -30,30 +59,40 @@ skip. Do not start before you have all the answers.
 1. **Is the Apple Developer Program membership active?** If not, stop here.
    The user must enroll at developer.apple.com first. Approval can take a
    day or two.
-2. **Does the app exist in App Store Connect yet?** If not, guide the user
-   to create it (name, bundle id, SKU). The bundle id must match the one
-   in Unity Player Settings.
-3. **Which Mac will be the build machine?** The user's own Mac works, but
+2. **Does the app exist in App Store Connect yet?** If not, walk the
+   user through creating it, click by click (see the app record section
+   in [references/secrets-setup.md](references/secrets-setup.md)). Then
+   verify the bundle id yourself: read it from
+   `ProjectSettings/ProjectSettings.asset`
+   (`applicationIdentifier` block) and compare it to the one in App
+   Store Connect. A mismatch here surfaces hours later as a signing
+   error nobody connects back to this step.
+3. **What is the Apple Team ID?** developer.apple.com -> Membership.
+   A 10-character code. It goes into the Fastfile as `TEAM_ID`.
+4. **Which Mac will be the build machine?** The user's own Mac works, but
    builds are heavy (10 to 40 minutes of full CPU). A spare Mac or Mac
    mini is better. The Mac must stay on and awake for builds to run.
-4. **Is the repository on GitHub, and is the user an admin of it?** Admin
+5. **Is the repository on GitHub, and is the user an admin of it?** Admin
    is needed to add runners and secrets.
-5. **What Unity version and where is it installed?** Run
+6. **What Unity version and where is it installed?** Run
    `ls /Applications/Unity/Hub/Editor/` on the build Mac. Confirm iOS
    Build Support is installed for that version.
-6. **Does the project already build for iOS from the editor?** If a manual
+7. **Does the project already build for iOS from the editor?** If a manual
    build fails, fix that first. CI cannot fix a broken build.
-7. **Is the `gh` CLI installed and logged in?** Check with
-   `gh auth status`. If yes, you can store the GitHub secrets yourself
-   with `gh secret set` and the user only creates the Apple-side values.
-   If no, the user pastes each secret in the browser instead.
-8. **Does the project ship remote content?** Check, do not just ask:
+8. **Is the `gh` CLI installed and logged in?** (`gh` is GitHub's
+   command-line tool.) Check with `gh auth status`. If yes, you can
+   store the GitHub secrets yourself with `gh secret set` and the user
+   only creates the Apple-side values. A fine-grained token without
+   repo access makes those commands fail confusingly, so check the
+   scopes in the same output. If no, the user pastes each secret in
+   the browser instead.
+9. **Does the project ship remote content?** Check, do not just ask:
    look for Addressables in `Packages/manifest.json` and remote load
    paths in the Addressables settings. If the project loads content
    from a CDN or bucket, the build must also build and upload that
    content, or the new binary can point at a catalog that does not
    exist yet. See the remote content section below.
-9. **How private do they want the secret values?** Ask this straight
+10. **How private do they want the secret values?** Ask this straight
    out before any secret exists. Default and recommendation: values
    never enter the chat. The user saves each value to a local file (or
    pastes it in the browser) and you only run commands that read the
@@ -142,7 +181,8 @@ The `beta` lane signs the exported project and uploads it. It also:
 - sets `ITSAppUsesNonExemptEncryption` to false so uploads do not stall
   on the export compliance question
 - uploads with `skip_waiting_for_build_processing: true` plus a
-  changelog, which waits only minutes instead of the full processing time
+  changelog: it waits only until the build appears on App Store Connect
+  (minutes), not for full processing
 
 The complete Fastfile is in
 [references/fastlane-reference.md](references/fastlane-reference.md).
@@ -150,7 +190,10 @@ The complete workflow, with test gate and release notes generation, is in
 [references/workflow-reference.md](references/workflow-reference.md).
 
 **Check:** the build appears in App Store Connect under TestFlight and
-installs on a phone.
+installs on a phone. For that last part the user needs the TestFlight
+app on their phone and themselves added as an internal tester
+(App Store Connect -> TestFlight -> Internal Testing, add a group with
+their Apple ID). Guide them there on the first build.
 
 ## Remote content (only if the interview found it)
 
@@ -184,8 +227,14 @@ from keychain errors to PATH problems to stale `Library/` state.
 
 - Android or other platforms. The runner and build-script patterns carry
   over, but signing is different.
-- Remote content updates. If the project uses Addressables with remote
-  content, the **unity-addressables** skill covers building and pushing
-  that content, and the push step slots into this same workflow.
+- Deep Addressables work (groups, loading, hosting choices). The remote
+  content section above covers only what the build pipeline needs; the
+  **unity-addressables** skill covers the rest.
+- CocoaPods post-processing. Projects with Firebase or ad SDKs (EDM4U)
+  need `pod install` between export and signing; that step is not
+  included here.
 - App Store release. This pipeline ends at TestFlight. Promotion to the
   store is a manual decision.
+- Intel Macs and GitHub-hosted macOS runners. Hosted runners start cold
+  every run, so the warm `Library/` advantage (the biggest time saver in
+  this pipeline) is lost there.
