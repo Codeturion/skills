@@ -21,7 +21,15 @@ public static class CIBuild
 {
     public static void BuildIOS()
     {
-        var buildPath = GetArg("-buildPath") ?? "build/ios";
+        var buildPath = GetArg("-buildPath");
+        if (string.IsNullOrEmpty(buildPath))
+        {
+            // No relative fallback: Unity resolves relative paths against its
+            // own working directory, not the project. Require the absolute arg.
+            Debug.LogError("Missing -buildPath argument (must be absolute)");
+            EditorApplication.Exit(1);
+            return;
+        }
 
         var options = new BuildPlayerOptions
         {
@@ -279,6 +287,10 @@ jobs:
           bundle install
           bundle exec fastlane ios beta
 
+      - name: Clean build output (the .ipa is on TestFlight now; disk fills otherwise)
+        if: ${{ !inputs.unsigned_check }}
+        run: rm -rf build/output
+
       - name: Notify (optional, needs BUILD_WEBHOOK secret)
         if: always()
         env:
@@ -301,7 +313,9 @@ jobs:
   the build number and on the Unity project folder. The group queues
   them instead.
 - **Tests as a gate**: EditMode tests run before the export. A red test
-  stops the pipeline before it costs 20 minutes of build time.
+  stops the pipeline before it costs 20 minutes of build time. If the
+  project has no tests yet, remove this step; a gate that always passes
+  protects nothing.
 - **`clean: false` everywhere**: keeps `Library/` between runs. First
   build imports everything once; later builds start warm.
 - **`-logFile -`**: streams the Unity log into the Actions log, so a

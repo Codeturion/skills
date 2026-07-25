@@ -44,10 +44,13 @@ skipped. Run the commands over SSH or in a terminal on the build Mac.
    is a separate download: `xcodebuild -downloadPlatform iOS`. Verify
    with `xcodebuild -version`.
 3. **Unity licensed on this machine?** Batchmode needs an activated
-   license and fails with "No valid Unity license" without one. Open
-   Unity Hub once on the build Mac and sign in (Personal), or activate
-   with the licensing client or `-serial` (Pro). Verify by running any
-   `-batchmode -quit` command and checking the log.
+   license and fails with "No valid Unity license" without one.
+   Signing into Unity Hub needs a GUI once: on a headless Mac, enable
+   Screen Sharing (System Settings -> General -> Sharing) and connect
+   with the Finder (Cmd+K, `vnc://<mac-name>.local`) for that one
+   session. Sign in to Hub (Personal), or activate with the licensing
+   client or `-serial` (Pro). Verify by running any `-batchmode -quit`
+   command and checking the log.
 4. **Project opens on this machine?** Open the project once (or run a
    batchmode import) so `Library/` builds and packages resolve.
 
@@ -79,6 +82,15 @@ skip. Do not start before you have all the answers.
    Build Support is installed for that version.
 7. **Does the project already build for iOS from the editor?** If a manual
    build fails, fix that first. CI cannot fix a broken build.
+   While checking, also look for CocoaPods users: Firebase, ad or
+   analytics SDKs, or an `ExternalDependencyManager` folder in Assets.
+   If present, warn the user now: this pipeline does not run
+   `pod install`, and those projects need that step (and often an
+   `.xcworkspace` build) between export and signing. Better to know
+   before setup than at a signing error in Phase 5.
+   Also check whether the project has any EditMode tests. If not,
+   remove the test gate step from the workflow instead of shipping a
+   gate that always passes.
 8. **Is the `gh` CLI installed and logged in?** (`gh` is GitHub's
    command-line tool.) Check with `gh auth status`. If yes, you can
    store the GitHub secrets yourself with `gh secret set` and the user

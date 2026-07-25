@@ -29,12 +29,25 @@ in the CI keychain needs UI approval for codesign, and there is no UI.
 Fix: after match, run
 
 ```
-security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k <password> ~/Library/Keychains/ci-db
+security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k <password> ~/Library/Keychains/<keychain-name>-db
 ```
 
 The beta lane in fastlane-reference.md already does this. If you still
-see the error, the lane ran against a stale keychain: delete
-`~/Library/Keychains/ci-db` and rerun (the lanes recreate it).
+see the error, the lane ran against a stale keychain: delete the
+keychain db file and rerun (the lanes recreate it).
+
+**Keychain vanishes mid-build, or partition-list-style failures on a
+Mac with several runners.** Two repos share one keychain name. The
+lanes delete and recreate their keychain on every run, so builds from
+two repos running at once destroy each other's keychain. Give every
+repo its own `KEYCHAIN_NAME` (fastlane-reference.md).
+
+**`setup_signing` fails creating the certificate.** Apple allows only
+two active distribution certificates per team. Anyone who shipped
+before may already be at the limit. List them at developer.apple.com ->
+Certificates. Either revoke an unused one (careful: revoking breaks
+whatever pipeline still signs with it) or import the existing cert into
+match with `fastlane match import` instead of generating a new one.
 
 **match asks for a password interactively and the job hangs.**
 `MATCH_PASSWORD` is not set or not exported into the step's `env`.
@@ -73,6 +86,19 @@ once. If it happens every time, something wipes the checkout: make sure
 make the build method call `EditorApplication.Exit(1)` on failure, like
 the script in workflow-reference.md. Without the explicit exit, batchmode
 can end green after a failed build.
+
+**Test step fails on a project with no tests.** The gate assumes tests
+exist. If the project has none, remove the EditMode step (and the
+artifact upload) from the workflow until it does; a gate that always
+passes on zero tests protects nothing.
+
+**Runner disk fills up over time.** Each signed build leaves an .ipa in
+`build/output`, and Xcode's DerivedData grows forever. Add a cleanup
+line to the workflow (`rm -rf build/output`) after upload, and clear
+`~/Library/Developer/Xcode/DerivedData` when the disk gets tight. If
+builds start failing oddly after months of stale workspace state, the
+reset is: delete the repo folder inside the runner's `_work` directory
+and let checkout rebuild it (costs one full reimport).
 
 ## TestFlight
 

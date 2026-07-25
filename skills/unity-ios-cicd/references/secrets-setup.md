@@ -158,13 +158,14 @@ The workflow writes this key to a temp file and points git at it via
 What it is: the password match uses to encrypt everything in the certs
 repo. Whoever has repo access still cannot read the certs without it.
 
-How to get it: the user invents it. Long and random:
+How to get it: generate it, long and random (in Way A the agent
+generates and stores it in one pipe, see above):
 
 ```bash
 openssl rand -base64 24
 ```
 
-Store it in a password manager too. If it is lost, the certs repo is
+The user must store it in a password manager. If it is lost, the certs repo is
 unreadable and match must start over (`fastlane match nuke` and re-run
 the bootstrap).
 

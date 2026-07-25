@@ -12,6 +12,10 @@ source "https://rubygems.org"
 gem "fastlane"
 ```
 
+Run `bundle install` once locally and **commit `Gemfile.lock`**. Without
+the lockfile, every CI run installs whatever fastlane released that day,
+and a bad release breaks the pipeline on a random Tuesday.
+
 ## fastlane/Appfile
 
 ```ruby
@@ -42,7 +46,10 @@ default_platform(:ios)
 XCODE_PROJECT = "build/ios/Unity-iPhone.xcodeproj".freeze
 BUNDLE_ID = "com.example.mygame".freeze
 TEAM_ID = "YOURTEAMID".freeze
-KEYCHAIN_NAME = "ci".freeze
+# Name the keychain after the app. One Mac can serve several repos, and the
+# lanes delete and recreate this keychain on every run: two repos sharing one
+# keychain name would kill each other's keychain mid-build.
+KEYCHAIN_NAME = "ci-mygame".freeze
 
 platform :ios do
   desc "One-time bootstrap: generate distribution cert + profile into the certs repo"
@@ -161,6 +168,11 @@ end
 - **Fresh keychain every run**: `delete_keychain` + `create_keychain`
   means a failed run cannot poison the next one. The keychain is cheap
   to rebuild because match restores the certs from the repo.
+- **Per-app keychain name**: the fresh-keychain pattern is destructive,
+  so the name must be unique per repo when one Mac hosts several
+  runners. Two lanes sharing the name `ci` would delete each other's
+  keychain mid-codesign, an intermittent failure that looks like the
+  partition-list bug but is not.
 - **`readonly: true` in beta**: only the bootstrap lane may write to the
   certs repo. Builds can never mutate signing state by accident.
 - **`set-key-partition-list`**: on a Mac with no GUI session, macOS wants
