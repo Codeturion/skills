@@ -61,7 +61,10 @@ skipped. Run the commands over SSH or in a terminal on the build Mac.
    - Enable the Screen Sharing service over SSH:
      `sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist`
      and connect from another Mac (Finder, Cmd+K,
-     `vnc://<mac-name>.local`, log in with the Mac account).
+     `vnc://<mac-name>.local`, log in with the Mac account). This
+     opens port 5900: only do it on a trusted home or office network
+     (or over a VPN), never on a Mac reachable from the internet, and
+     turn it off after (teardown).
    - From Windows or Linux, try any VNC client against that service.
      Honest warning: recent macOS restricts the legacy VNC mode
      third-party clients need (the old `kickstart -setvnclegacy` route
@@ -263,17 +266,21 @@ the pipeline needs exactly two changes.
    `Unity-iPhone.xcworkspace` already in place. (The workflow's
    `$GITHUB_PATH` step already puts Homebrew on PATH.)
 2. **Build the workspace, not the project.** Pods live in the
-   workspace. In the Fastfile, `build_app` takes
-   `workspace: "build/ios/Unity-iPhone.xcworkspace"` instead of
-   `project:`. The unsigned check likewise uses
-   `xcodebuild -workspace ... -scheme Unity-iPhone`. Building the
-   `.xcodeproj` directly is the classic mistake: it compiles without
-   the pods and fails with missing-framework or linker errors.
+   workspace. Both the shipped Fastfile and the unsigned check
+   auto-detect `Unity-iPhone.xcworkspace` and use it when present, so
+   no edit is needed. Building the `.xcodeproj` directly is the
+   classic mistake: it compiles without the pods and fails with
+   missing-framework or linker errors.
 
 If the export finishes without `Pods/`, EDM4U could not find `pod`
-(or its auto-install setting is off). Fallback: run
-`pod install` in the export folder as a workflow step between export
-and signing, then build the workspace as above.
+(or its auto-install setting is off: Assets -> External Dependency
+Manager -> iOS Resolver -> Settings). Fallback step, between export
+and signing:
+
+```yaml
+      - name: Pod install (only if EDM4U did not run it)
+        run: cd build/ios && pod install
+```
 
 ## Remote content (only if the interview found it)
 

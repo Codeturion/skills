@@ -152,11 +152,13 @@ platform :ios do
       value: false
     )
 
-    # CocoaPods projects (EDM4U/Firebase): replace the project: line with
-    #   workspace: "build/ios/Unity-iPhone.xcworkspace",
-    # Building the bare project without the pods fails at link time.
+    # CocoaPods projects (EDM4U/Firebase) export a workspace; it must be
+    # built instead of the bare project or linking fails. Auto-detect, same
+    # as the workflow's unsigned check.
+    workspace_path = "build/ios/Unity-iPhone.xcworkspace"
+    target = File.exist?(workspace_path) ? { workspace: workspace_path } : { project: XCODE_PROJECT }
     build_app(
-      project: XCODE_PROJECT,
+      **target,
       scheme: "Unity-iPhone",
       configuration: "Release",
       export_method: "app-store",

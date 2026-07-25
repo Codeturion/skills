@@ -218,6 +218,9 @@ concurrency:
 
 env:
   UNITY: /Applications/Unity/Hub/Editor/6000.3.10f1/Unity.app/Contents/MacOS/Unity
+  # On a Mac with more than one Xcode, pin the one this pipeline uses;
+  # otherwise a system xcode-select change silently switches toolchains:
+  # DEVELOPER_DIR: /Applications/Xcode.app
   LANG: en_US.UTF-8
   LC_ALL: en_US.UTF-8
 
@@ -311,6 +314,10 @@ jobs:
           cp build/output/*.app.dSYM.zip build/dsym/ 2>/dev/null || \
             echo "::warning::no dSYM found in build/output; crash logs will not symbolicate"
           rm -rf build/output
+          # do not leave the signing key sitting in an unlocked keychain
+          # between runs; the next run recreates it anyway (name = the
+          # Fastfile's KEYCHAIN_NAME)
+          security delete-keychain ci-mygame 2>/dev/null || true
 
       - name: Upload dSYM artifact
         if: ${{ always() && !inputs.unsigned_check }}
@@ -333,6 +340,17 @@ jobs:
             curl -s --max-time 15 -X POST \
               -H "content-type: application/json" --data-binary @- \
               "$WEBHOOK" -o /dev/null || true
+```
+
+## Before the first run: placeholder check
+
+Four template values appear across these files. Grep for them in the
+project before triggering the first build; any hit means an edit was
+missed, and the failure it causes shows up hours later with no
+matching troubleshooting entry:
+
+```bash
+grep -rn "com.example.mygame\|YOURTEAMID\|ci-mygame\|6000.3.10f1" .github fastlane
 ```
 
 ## Design notes

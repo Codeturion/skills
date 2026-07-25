@@ -76,6 +76,15 @@ reference files:
    nothing until the export question was answered in the browser. Fix:
    `ITSAppUsesNonExemptEncryption=false` in the lane.
 
+## Adapted, not re-run verbatim
+
+The reference pipeline runs a remote-content push (rclone to R2,
+bundles first, catalog last) and a webhook notify on every production
+build, so those patterns are production-verified. The generic versions
+in workflow-reference.md (host-agnostic rclone config, BUILD_WEBHOOK,
+the dSYM artifact step, the end-of-run keychain delete) are
+adaptations of them and have not been re-run character for character.
+
 ## Not covered by this record
 
 - Intel Macs (the reference machine is arm64; paths and Homebrew prefix

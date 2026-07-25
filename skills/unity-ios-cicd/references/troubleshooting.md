@@ -43,7 +43,9 @@ keychain db file and rerun (the lanes recreate it).
 keychains sit in the search list, each holding the same team's "Apple
 Distribution" identity. List them with `security list-keychains` and
 delete stale ones (`security delete-keychain <name>`); the lanes
-recreate the current one.
+recreate the current one. Only ever delete keychains this pipeline
+created (the `ci-*` names). Never touch `login.keychain-db`, that is
+the user's personal keychain.
 
 **Keychain vanishes mid-build, or partition-list-style failures on a
 Mac with several runners.** Two repos share one keychain name. The
@@ -126,6 +128,22 @@ find `pod` during the export (check the Unity log for its error), or
 its Cocoapods integration setting is off. Fix: `brew install
 cocoapods` on the runner, make sure the Homebrew PATH step runs before
 the export, or run `pod install` in the export folder as its own step.
+
+**Firebase app builds and installs but crashes at launch on device.**
+Usually the config file, not the pods: check that
+`GoogleService-Info.plist` made it into the exported project (the
+Firebase Unity plugin injects it at export; a missing or placeholder
+file crashes `FirebaseApp.Create` on startup).
+
+**Builds broke right after upgrading Unity, Xcode, or macOS.** In
+order: the `UNITY` env path in testflight.yml still points at the old
+version (`ls /Applications/Unity/Hub/Editor/`); a new Xcode wants the
+license accepted again (`sudo xcodebuild -license accept`) and maybe
+`-runFirstLaunch`; the first build after a Unity upgrade does a full
+reimport (expect the cold-Library time once); and a new Unity may
+change the export enough that agvtool or signing settings need the
+fixes above. Upgrade one tool at a time and run the unsigned check
+before shipping.
 
 **Deployment-target warnings from pod targets.** Pods pinned to old
 iOS versions (9.0) warn under new Xcode. Warnings only; safe to

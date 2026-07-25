@@ -47,12 +47,17 @@ went to the wrong repo and the file is already gone, the recovery is
 revoke and regenerate the key (section 1).
 
 Passwords the skill invents (`MATCH_PASSWORD`, `CI_KEYCHAIN_PASSWORD`)
-need no user step at all: generate and store in one pipe, then show the
-user the value once so they can save it in their password manager
-(`MATCH_PASSWORD` matters, see section 4):
+need no user step at all. Do NOT print them to the terminal (that puts
+the value in the transcript, the exact thing the privacy rule
+forbids). Generate to a file, store from the file, then have the USER
+open the file themselves to save it in their password manager:
 
 ```bash
-openssl rand -base64 24 | tee /dev/tty | gh secret set MATCH_PASSWORD -R YOURORG/YOURREPO
+openssl rand -base64 24 > match_password.txt
+gh secret set MATCH_PASSWORD -R YOURORG/YOURREPO < match_password.txt
+gh secret list -R YOURORG/YOURREPO
+# now ask the user to run:  open -e match_password.txt
+# they save the value in their password manager, then: rm match_password.txt
 ```
 
 Check `gh auth status` first. If `gh` is missing or logged into the

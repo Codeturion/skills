@@ -102,6 +102,10 @@ gem "fastlane"
 Workflows then run `bundle install && bundle exec fastlane ...`. Never
 `sudo gem install`.
 
+Two more Homebrew tools the workflows use: `brew install jq` (the
+notify step; without it notifications silently never fire) and, for
+remote Addressables content only, `brew install rclone`.
+
 ## 6. Smoke workflow
 
 Add this and run it before anything else. To run it: repo page on
@@ -142,9 +146,12 @@ sudo pmset -a sleep 10               # restore sleep (value is in MINUTES)
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
 ```
 
-Then: disable automatic login (System Settings -> Users & Groups),
-revoke the ASC API key (Users and Access -> Integrations), remove the
-deploy key from the certs repo, and delete the repo's Actions secrets.
+Then: delete the runner folder itself (its `_work` directory holds a
+full source checkout), disable automatic login (System Settings ->
+Users & Groups), re-enable FileVault if it was turned off for
+auto-login, revoke the ASC API key (Users and Access -> Integrations),
+remove the deploy key from the certs repo, and delete the repo's
+Actions secrets.
 Moving to a new Mac instead? Nothing Apple-side changes: install a
 runner on the new machine, run the same workflows, and match restores
 the certs from the repo on the first build.
@@ -159,4 +166,9 @@ the certs from the repo on the first build.
   arbitrary code on the Mac, and read the secrets. Fine solo; with
   collaborators, protect the workflows with environment rules or
   required reviews.
+- `clean: false` keeps the workspace between builds, so a malicious
+  package, gem, or pod would also survive between builds. Keep
+  dependencies pinned (Gemfile.lock, Packages/packages-lock.json), be
+  deliberate about adding pods, and when in doubt delete the repo
+  folder under the runner's `_work` directory and let it rebuild.
 - The runner user account needs no admin rights for builds.
