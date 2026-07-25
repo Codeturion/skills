@@ -90,6 +90,9 @@ rclone (`brew install rclone` on the runner). Secrets:
         if: ${{ !inputs.unsigned_check }}
         env:
           RCLONE_CONFIG_CDN_TYPE: s3
+          # set to your host: Cloudflare (R2), AWS, GCS, Minio ... rclone
+          # behaves better with the provider named than as generic "Other"
+          RCLONE_CONFIG_CDN_PROVIDER: Cloudflare
           RCLONE_CONFIG_CDN_ACCESS_KEY_ID: ${{ secrets.CONTENT_ACCESS_KEY_ID }}
           RCLONE_CONFIG_CDN_SECRET_ACCESS_KEY: ${{ secrets.CONTENT_SECRET_ACCESS_KEY }}
           RCLONE_CONFIG_CDN_ENDPOINT: https://YOUR-S3-COMPATIBLE-ENDPOINT

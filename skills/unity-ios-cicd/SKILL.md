@@ -80,7 +80,11 @@ skipped. Run the commands over SSH or in a terminal on the build Mac.
    sign-in, automatic login in Phase 1). Sign in to Hub (Personal), or
    activate with the licensing client or `-serial` (Pro). Verify by
    running any `-batchmode -quit` command and checking the log.
-5. **Project opens on this machine?** Open the project once (or run a
+5. **Git identity set?** `git config user.name` must print something.
+   The signing bootstrap pushes to the certs repo and dies with
+   "Please tell me who you are" without it:
+   `git config --global user.name "CI" && git config --global user.email ci@example.com`.
+6. **Project opens on this machine?** Open the project once (or run a
    batchmode import) so `Library/` builds and packages resolve.
 
 ## Step 1: Interview the user
@@ -260,9 +264,11 @@ go into the same TestFlight workflow:
    not optional: **bundles first, catalog last**. A catalog that goes
    up first can reference bundles that are not there yet, and every
    fresh install in that window breaks. And the catalog must be served
-   with `Cache-Control: no-store`: it keeps the same filename while its
-   content changes, so an edge cache will happily serve a stale one.
-   Bundles are content-hashed and can cache forever.
+   with `Cache-Control: no-store`: with a pinned Player Version
+   Override (the usual setup for updatable catalogs, see the
+   unity-addressables skill) the catalog keeps the same filename while
+   its content changes, so an edge cache will happily serve a stale
+   one. Bundles are content-hashed and can cache forever.
 
 The generic upload step (any S3-compatible host) is in
 [references/workflow-reference.md](references/workflow-reference.md),
