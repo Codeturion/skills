@@ -298,7 +298,9 @@ jobs:
         run: |
           # The dSYM is the only way to symbolicate TestFlight crash logs.
           # Keep it as a workflow artifact, then clear the heavy output.
-          mkdir -p build/dsym && cp -R build/output/*.app.dSYM.zip build/dsym/ 2>/dev/null || true
+          mkdir -p build/dsym
+          cp build/output/*.app.dSYM.zip build/dsym/ 2>/dev/null || \
+            echo "::warning::no dSYM found in build/output; crash logs will not symbolicate"
           rm -rf build/output
 
       - name: Upload dSYM artifact

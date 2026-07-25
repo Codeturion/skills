@@ -137,7 +137,8 @@ cd ~/actions-runner-mygame
 ./config.sh remove --token <fresh-token-from-the-runners-page>
 security delete-keychain ci-mygame   # your KEYCHAIN_NAME from the Fastfile
 sudo pmset -a sleep 10               # restore sleep (value is in MINUTES)
-# if Screen Sharing was enabled for the setup, turn it off again:
+# ONLY if Screen Sharing was enabled for this setup (skip if the user
+# had it on for their own remote access), turn it off again:
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
 ```
 

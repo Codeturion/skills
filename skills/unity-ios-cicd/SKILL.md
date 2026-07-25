@@ -103,7 +103,9 @@ skip. Do not start before you have all the answers.
    A 10-character code. It goes into the Fastfile as `TEAM_ID`.
 4. **Which Mac will be the build machine?** The user's own Mac works, but
    builds are heavy (10 to 40 minutes of full CPU). A spare Mac or Mac
-   mini is better. The Mac must stay on and awake for builds to run.
+   mini is better. A dedicated Mac stays on and awake; a daily machine
+   uses daily-machine mode (runner-setup) and builds only while the
+   user is logged in.
 5. **Is the repository on GitHub, and is the user an admin of it?** Admin
    is needed to add runners and secrets.
 6. **What Unity version and where is it installed?** Run
