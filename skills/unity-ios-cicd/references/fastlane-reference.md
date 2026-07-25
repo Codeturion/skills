@@ -152,6 +152,9 @@ platform :ios do
       value: false
     )
 
+    # CocoaPods projects (EDM4U/Firebase): replace the project: line with
+    #   workspace: "build/ios/Unity-iPhone.xcworkspace",
+    # Building the bare project without the pods fails at link time.
     build_app(
       project: XCODE_PROJECT,
       scheme: "Unity-iPhone",

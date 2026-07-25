@@ -39,7 +39,7 @@ const SKILLS = [
     "detail": "Turns a Mac into an iOS build machine: self-hosted GitHub Actions runner, Unity batchmode export, fastlane match signing in a dedicated CI keychain, TestFlight upload. It interviews you first, walks every secret click by click, and can store them itself: budget an hour for secrets, half a day end to end. Against Unity Cloud Build, Codemagic, or hosted macOS runners the math is simple: no per-minute billing, and the runner keeps a warm Library where cloud machines reimport from scratch (~30 min per build). Every pipeline claim was run live first; the dated record ships in the skill, and the troubleshooting file is the part you will want at 2am: errSecInternalComponent, launchd PATH, Missing Compliance, all hit for real.",
     "sections": "runner-setup · secrets-setup · fastlane-reference · workflow-reference · troubleshooting · test-cases",
     "requires": "nothing (self-contained; unity-headless-cli pairs well)",
-    "notes": "Verified against a live pipeline shipping TestFlight builds from a headless Apple Silicon Mac mini. Ends at TestFlight; needs the 99 USD/year Apple Developer membership and a Mac that stays awake. Does not cover CocoaPods projects (Firebase, most ad SDKs) yet.",
+    "notes": "Verified against a live pipeline shipping TestFlight builds from a headless Apple Silicon Mac mini. CocoaPods projects (Firebase, ad SDKs) covered: the EDM4U path was verified on a real editor. Ends at TestFlight; needs the 99 USD/year Apple Developer membership and a Mac that stays awake.",
     "repo": "https://github.com/Codeturion/skills/tree/main/skills/unity-ios-cicd",
     "name": "unity-ios-cicd"
   },

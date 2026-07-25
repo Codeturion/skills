@@ -114,6 +114,28 @@ builds start failing oddly after months of stale workspace state, the
 reset is: delete the repo folder inside the runner's `_work` directory
 and let checkout rebuild it (costs one full reimport).
 
+## CocoaPods (EDM4U projects)
+
+**Linker or missing-framework errors on a Firebase/ads project.** The
+build used the `.xcodeproj` instead of the `.xcworkspace`. Pods only
+link through the workspace. Point `build_app` (or `xcodebuild`) at
+`Unity-iPhone.xcworkspace` with the `Unity-iPhone` scheme.
+
+**Export finished but there is no `Pods/` folder.** EDM4U could not
+find `pod` during the export (check the Unity log for its error), or
+its Cocoapods integration setting is off. Fix: `brew install
+cocoapods` on the runner, make sure the Homebrew PATH step runs before
+the export, or run `pod install` in the export folder as its own step.
+
+**Deployment-target warnings from pod targets.** Pods pinned to old
+iOS versions (9.0) warn under new Xcode. Warnings only; safe to
+ignore until a pod actually refuses to build.
+
+**`Cannot build untitled scene` from a batchmode build.** The project
+has no scene in Build Settings and no saved scene asset. Add a scene
+to `EditorBuildSettings.scenes`, or create and save one in the build
+script before `BuildPlayer`.
+
 ## TestFlight
 
 **Upload succeeds but the build never shows for testers, "Missing

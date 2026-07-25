@@ -258,7 +258,13 @@ jobs:
       - name: Unsigned compile check
         if: inputs.unsigned_check
         run: |
-          xcodebuild -project build/ios/Unity-iPhone.xcodeproj \
+          # CocoaPods projects export a workspace; plain projects do not
+          if [ -d build/ios/Unity-iPhone.xcworkspace ]; then
+            TARGET_FLAGS="-workspace build/ios/Unity-iPhone.xcworkspace"
+          else
+            TARGET_FLAGS="-project build/ios/Unity-iPhone.xcodeproj"
+          fi
+          xcodebuild $TARGET_FLAGS \
             -scheme Unity-iPhone -configuration Release \
             -destination "generic/platform=iOS" \
             CODE_SIGNING_ALLOWED=NO build

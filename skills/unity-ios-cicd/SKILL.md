@@ -119,10 +119,8 @@ skip. Do not start before you have all the answers.
    build fails, fix that first. CI cannot fix a broken build.
    While checking, also look for CocoaPods users: Firebase, ad or
    analytics SDKs, or an `ExternalDependencyManager` folder in Assets.
-   If present, warn the user now: this pipeline does not run
-   `pod install`, and those projects need that step (and often an
-   `.xcworkspace` build) between export and signing. Better to know
-   before setup than at a signing error in Phase 5.
+   If present, the pipeline needs two small changes; follow the
+   CocoaPods section below.
    Also check whether the project has any EditMode tests. If not,
    remove the test gate step from the workflow instead of shipping a
    gate that always passes.
@@ -251,6 +249,32 @@ app on their phone and themselves added as an internal tester
 (App Store Connect -> TestFlight -> Internal Testing, add a group with
 their Apple ID). Guide them there on the first build.
 
+## CocoaPods projects (only if the interview found EDM4U)
+
+Firebase, AdMob, and most ad or analytics SDKs ship with EDM4U (the
+External Dependency Manager for Unity). On iOS they declare native
+libraries as CocoaPods. Verified on a real editor (see test-cases.md):
+the pipeline needs exactly two changes.
+
+1. **CocoaPods on the build Mac**: `brew install cocoapods`. That is
+   the whole setup. With `pod` on PATH, EDM4U runs `pod install`
+   itself during the Unity export, even in batchmode: the export
+   folder comes out with `Podfile`, `Pods/`, and
+   `Unity-iPhone.xcworkspace` already in place. (The workflow's
+   `$GITHUB_PATH` step already puts Homebrew on PATH.)
+2. **Build the workspace, not the project.** Pods live in the
+   workspace. In the Fastfile, `build_app` takes
+   `workspace: "build/ios/Unity-iPhone.xcworkspace"` instead of
+   `project:`. The unsigned check likewise uses
+   `xcodebuild -workspace ... -scheme Unity-iPhone`. Building the
+   `.xcodeproj` directly is the classic mistake: it compiles without
+   the pods and fails with missing-framework or linker errors.
+
+If the export finishes without `Pods/`, EDM4U could not find `pod`
+(or its auto-install setting is off). Fallback: run
+`pod install` in the export folder as a workflow step between export
+and signing, then build the workspace as above.
+
 ## Remote content (only if the interview found it)
 
 If the project uses Addressables with remote content, two extra pieces
@@ -288,9 +312,6 @@ from keychain errors to PATH problems to stale `Library/` state.
 - Deep Addressables work (groups, loading, hosting choices). The remote
   content section above covers only what the build pipeline needs; the
   **unity-addressables** skill covers the rest.
-- CocoaPods post-processing. Projects with Firebase or ad SDKs (EDM4U,
-  the External Dependency Manager for Unity) need `pod install` between
-  export and signing; that step is not included here.
 - App Store release. This pipeline ends at TestFlight. Promotion to the
   store is a manual decision.
 - Intel Macs and GitHub-hosted macOS runners. Hosted runners start cold

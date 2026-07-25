@@ -32,6 +32,27 @@ GitHub Actions runner.
   the rule exists exactly because a second signing repo on the same
   Mac would race that shared name.
 
+## CocoaPods path (verified 2026-07-25)
+
+Tested on a fresh minimal project, same machine, Unity 6000.3.10f1,
+EDM4U 1.2.188 (OpenUPM), CocoaPods 1.16.2, declaring the
+FirebaseAnalytics pod via a `Dependencies.xml`:
+
+- Batchmode iOS export: EDM4U ran `pod install` itself during the
+  export. The export folder contained `Podfile`, `Podfile.lock`,
+  `Pods/` (FirebaseAnalytics plus five Google dependency pods), and
+  `Unity-iPhone.xcworkspace`, with no manual step.
+- Unsigned Release compile of the workspace
+  (`xcodebuild -workspace ... CODE_SIGNING_ALLOWED=NO`): BUILD
+  SUCCEEDED, Firebase linked.
+- Also reproduced along the way: a project with no saved scene fails
+  batchmode builds with `Cannot build untitled scene` (now in
+  troubleshooting).
+
+Not verified on the pods path: a signed TestFlight upload of a pods
+project (the signing steps are identical to the plain path, only the
+`build_app` target changes from project to workspace).
+
 ## Facts that were learned by failing
 
 Each of these caused a real red build before the fix shipped into the
