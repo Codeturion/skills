@@ -1,0 +1,12 @@
+{
+  "id": "ios-cicd",
+  "slug": "unity-ios-cicd",
+  "area": "build",
+  "status": "verified",
+  "verified": "2026-07 · 6000.3",
+  "blurb": "Self-hosted Actions runner → Fastlane → TestFlight, on a Mac you own",
+  "detail": "Turns a Mac into an iOS build machine: self-hosted GitHub Actions runner, Unity batchmode export, fastlane match signing in a dedicated CI keychain, TestFlight upload. Interviews you first, then walks every secret click by click. The troubleshooting file is the part you will want at 2am: errSecInternalComponent, launchd PATH, Missing Compliance, all hit for real and fixed.",
+  "sections": "runner-setup · secrets-setup · fastlane-reference · workflow-reference · troubleshooting · test-cases",
+  "requires": "unity-headless-cli (for the batchmode export)",
+  "notes": "Verified against a live pipeline shipping TestFlight builds from a headless Mac mini."
+}

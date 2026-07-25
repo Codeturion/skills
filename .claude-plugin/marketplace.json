@@ -17,6 +17,16 @@
       "homepage": "https://github.com/Codeturion/skills"
     },
     {
+      "name": "unity-ios-cicd",
+      "description": "Ship Unity iOS builds to TestFlight from a Mac you own: self-hosted GitHub Actions runner, batchmode Xcode export, fastlane match signing in a dedicated CI keychain, and a click-by-click guide to every secret.",
+      "author": {
+        "name": "Codeturion"
+      },
+      "category": "development",
+      "source": "./skills/unity-ios-cicd",
+      "homepage": "https://github.com/Codeturion/skills"
+    },
+    {
       "name": "unity-headless-cli",
       "description": "Set up a Unity project to be driven headless from the terminal: adds com.unity.pipeline, writes docs/unity-cli-ref.md, and wires CLAUDE.md to point at it. No GUI editor, no MCP server.",
       "author": {

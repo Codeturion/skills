@@ -25,6 +25,7 @@ npx skills add Codeturion/skills --skill unity-addressables
 /plugin marketplace add Codeturion/skills
 /plugin install unity-addressables@skills
 /plugin install unity-headless-cli@skills
+/plugin install unity-ios-cicd@skills
 ```
 
 Or copy a folder from `skills/` into your project's `.claude/skills/`.
@@ -35,10 +36,11 @@ Or copy a folder from `skills/` into your project's `.claude/skills/`.
 |---|---|---|
 | [unity-addressables](skills/unity-addressables/) | Addressables end to end: setup, groups and labels, leak-safe runtime loading, content builds in CI, remote content with updates from any static host. Includes the scan recipes and the traps found only by running it. | Unity 6000.3, Addressables 2.9.0 and 3.1.0, iOS content build |
 | [unity-headless-cli](skills/unity-headless-cli/) | Drive a Unity project headless from the terminal: no GUI editor, no MCP server. Create GameObjects, edit assets, run tests, evaluate live C#, 200 to 600 ms round trips. | Unity 6000.x, com.unity.pipeline |
+| [unity-ios-cicd](skills/unity-ios-cicd/) | Turn a Mac into an iOS build machine: self-hosted GitHub Actions runner, Unity batchmode export, fastlane match signing in a dedicated CI keychain, TestFlight upload. Interviews you first and walks every secret click by click. | Unity 6000.3, live TestFlight pipeline on a headless Mac mini |
 
-Each skill has a shareable page: [unity-addressables](https://skills.fuatcankoseoglu.com/#unity-addressables), [unity-headless-cli](https://skills.fuatcankoseoglu.com/#unity-headless-cli).
+Each skill has a shareable page: [unity-addressables](https://skills.fuatcankoseoglu.com/#unity-addressables), [unity-headless-cli](https://skills.fuatcankoseoglu.com/#unity-headless-cli), [unity-ios-cicd](https://skills.fuatcankoseoglu.com/#unity-ios-cicd).
 
-On the bench: `unity-ios-cicd` (GitHub Actions self-hosted, Fastlane, TestFlight) and `unity-playmode-automation` (headless smoke tests). The full roadmap is on the site.
+On the bench: `unity-playmode-automation` (headless smoke tests). The full roadmap is on the site.
 
 ## License
 

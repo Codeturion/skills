@@ -1,17 +1,5 @@
 [
   {
-    "id": "ios-cicd",
-    "slug": "unity-ios-cicd",
-    "area": "build",
-    "status": "planned",
-    "verified": "not yet",
-    "blurb": "Self-hosted Actions runner → Fastlane → TestFlight",
-    "detail": "Self-hosted GitHub Actions runner on a Mac, Fastlane signing, TestFlight upload: the whole path from commit to a build on your phone.",
-    "sections": "not written yet",
-    "requires": "unity-headless-cli",
-    "notes": "In the pipeline."
-  },
-  {
     "id": "playmode",
     "slug": "unity-playmode-automation",
     "area": "testing",
