@@ -36,6 +36,8 @@
   }
 
   * { box-sizing: border-box; }
+  ::selection { background: var(--chip-active-bg); }
+  * { scrollbar-color: var(--border-strong) var(--bg); }
   html { font-size: clamp(16px, 14.6px + 0.125vw, 19px); }
   body { margin: 0; background: var(--bg); color: var(--text); font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.875rem; line-height: 1.6; }
   a { color: var(--link); text-decoration: none; }
@@ -105,7 +107,7 @@
   .detail pre { margin: 0 0 0.7rem; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem 0.85rem; font-size: 0.74rem; line-height: 1.7; color: var(--text); overflow-x: auto; }
   .detail-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .btn-big { font-size: 0.74rem; padding: 0.45rem 0.9rem; border-radius: 6px; min-height: 40px; min-width: 8.5rem; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--primary); background: var(--primary); color: var(--btn-fg); }
-  .btn-big:disabled { cursor: default; border-color: #3A3C40; background: transparent; color: var(--dim); }
+  .btn-big:disabled { cursor: default; border-color: var(--border); background: transparent; color: var(--dim); }
   .btn-big.prompt { background: var(--panel); border-color: var(--border-strong); color: var(--text); }
   .btn-big.prompt:hover { border-color: var(--muted); }
   .src-link { font-size: 0.74rem; padding: 0.45rem 0.9rem; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--panel); color: var(--text); min-height: 40px; min-width: 8.5rem; display: inline-flex; align-items: center; justify-content: center; }
