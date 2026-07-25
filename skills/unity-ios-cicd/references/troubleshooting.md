@@ -92,10 +92,12 @@ exist. If the project has none, remove the EditMode step (and the
 artifact upload) from the workflow until it does; a gate that always
 passes on zero tests protects nothing.
 
-**Runner disk fills up over time.** Each signed build leaves an .ipa in
-`build/output`, and Xcode's DerivedData grows forever. Add a cleanup
-line to the workflow (`rm -rf build/output`) after upload, and clear
-`~/Library/Developer/Xcode/DerivedData` when the disk gets tight. If
+**Runner disk fills up over time.** Three growers: the .ipa in
+`build/output`, an .xcarchive per run in
+`~/Library/Developer/Xcode/Archives` (the biggest one on a Mac that
+ships daily), and DerivedData. The workflow's cleanup step handles the
+first two; clear `~/Library/Developer/Xcode/DerivedData` when the disk
+gets tight. If
 builds start failing oddly after months of stale workspace state, the
 reset is: delete the repo folder inside the runner's `_work` directory
 and let checkout rebuild it (costs one full reimport).
@@ -117,6 +119,34 @@ manually in between. The lane pulls
 `latest_testflight_build_number + 1` at run time, so just rerun. Keep
 the `concurrency` group in the workflow so CI cannot race itself.
 
+**Everything worked for months, now every Apple call returns 403 or an
+"agreement" error.** Apple updated the Program License Agreement and it
+sits unaccepted. Only the Account Holder can fix it: log into App Store
+Connect in a browser and accept the banner. Nothing in the pipeline is
+broken; this is the most common "CI broke overnight and nobody changed
+anything" cause.
+
+**CI is green but the build never appears for testers, and no
+"Missing Compliance" either.** With `skip_waiting_for_build_processing`
+the upload returns before Apple finishes processing. If processing then
+rejects the binary (icon, asset or entitlement problems, the ITMS
+errors), the only notice is an email from Apple to the account holder.
+Check App Store Connect -> TestFlight for the build's real state and
+the mail for the ITMS code.
+
+**Signing suddenly fails after adding Push, Game Center, IAP or Sign in
+with Apple.** New capabilities invalidate the provisioning profile, and
+the beta lane runs match read-only, so it keeps using the dead profile.
+Fix: enable the capability on the App ID (developer.apple.com ->
+Identifiers), then re-run the Signing setup workflow to regenerate the
+profile.
+
+**API key auth fails with a JWT or key error.** The `ASC_KEY_CONTENT`
+secret was mangled: pasted with literal `\n` instead of real line
+breaks, or an editor stripped the final newline. Re-set it straight
+from the file (`gh secret set ASC_KEY_CONTENT < AuthKey_XXXX.p8`), do
+not retype it.
+
 **API key works for some calls, fails others.** The key's role is too
 low. App Manager covers everything this pipeline does on the reference
 setup. Developer role does not. If `setup_signing` still gets a 403 on
@@ -130,8 +160,8 @@ the branch explicitly with `git_branch` in the `match` call.
 
 **`increment_build_number` fails with "Apple Generic Versioning is not
 enabled".** The action drives `agvtool`, which needs
-`VERSIONING_SYSTEM = apple-generic` in the Xcode project. Unity 6000.3
-exports set this up, older exports may not. Fix: set
+`VERSIONING_SYSTEM = apple-generic` in the Xcode project. The verified
+Unity 6000.3 export had it enabled; other Unity versions may not. Fix: set
 `CURRENT_PROJECT_VERSION` and `VERSIONING_SYSTEM` on the target, or
 write the build number with `update_info_plist` instead.
 

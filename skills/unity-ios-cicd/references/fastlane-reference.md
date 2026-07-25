@@ -66,7 +66,9 @@ platform :ios do
       name: KEYCHAIN_NAME,
       password: keychain_password,
       unlock: true,
-      timeout: 3600,
+      # no auto-lock: a 3600s timeout can relock the keychain mid-codesign
+      # on a long cold-Library build and fail signing halfway through
+      timeout: false,
       lock_when_sleeps: false
     )
 
@@ -95,7 +97,9 @@ platform :ios do
       name: KEYCHAIN_NAME,
       password: keychain_password,
       unlock: true,
-      timeout: 3600,
+      # no auto-lock: a 3600s timeout can relock the keychain mid-codesign
+      # on a long cold-Library build and fail signing halfway through
+      timeout: false,
       lock_when_sleeps: false
     )
 
@@ -111,8 +115,11 @@ platform :ios do
 
     # Headless runner: without an explicit partition list codesign intermittently
     # fails with errSecInternalComponent (key access needs UI approval otherwise).
-    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{keychain_password.shellescape} ~/Library/Keychains/#{KEYCHAIN_NAME}-db > /dev/null")
-    sh("security unlock-keychain -p #{keychain_password.shellescape} ~/Library/Keychains/#{KEYCHAIN_NAME}-db")
+    # log: false keeps the password out of the build log. Masking alone is
+    # not enough: shellescape can alter base64 characters so the logged
+    # string no longer matches the masked secret.
+    sh("security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{keychain_password.shellescape} ~/Library/Keychains/#{KEYCHAIN_NAME}-db > /dev/null", log: false)
+    sh("security unlock-keychain -p #{keychain_password.shellescape} ~/Library/Keychains/#{KEYCHAIN_NAME}-db", log: false)
 
     build_number = latest_testflight_build_number(
       api_key: api_key,

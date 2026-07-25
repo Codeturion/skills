@@ -143,6 +143,12 @@ name: Signing setup
 on:
   workflow_dispatch:
 
+# Same group as the TestFlight workflow: both delete and recreate the same
+# CI keychain, so they must never run at the same time.
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
 jobs:
   setup:
     runs-on: [self-hosted, macOS, unity]
@@ -280,7 +286,7 @@ jobs:
           if [ -n "$RELEASE_NOTES_INPUT" ]; then
             RELEASE_NOTES="$RELEASE_NOTES_INPUT"
           else
-            RELEASE_NOTES=$(git log -15 --pretty='- %s' | grep -E '^- (fix|feat|content|balance|ui|ios)' | head -10)
+            RELEASE_NOTES=$(git log -15 --pretty='- %s' | grep -E '^- (fix|feat|content|balance|ui|ios)' | head -10 || true)
           fi
           [ -z "$RELEASE_NOTES" ] && RELEASE_NOTES="Bug fixes and improvements."
           export RELEASE_NOTES
@@ -288,9 +294,15 @@ jobs:
           bundle exec fastlane ios beta
 
       - name: Clean build output (the .ipa is on TestFlight now; disk fills otherwise)
-        if: ${{ !inputs.unsigned_check }}
-        run: rm -rf build/output
+        if: ${{ always() && !inputs.unsigned_check }}
+        run: |
+          rm -rf build/output
+          # build_app also leaves an .xcarchive per run; on a CI-only Mac
+          # these are pure disk growth
+          rm -rf ~/Library/Developer/Xcode/Archives/*
 
+      # Payload below is Discord's schema. For Slack, send {"text": "..."}
+      # instead.
       - name: Notify (optional, needs BUILD_WEBHOOK secret)
         if: always()
         env:

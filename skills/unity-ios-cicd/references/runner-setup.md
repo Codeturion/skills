@@ -52,8 +52,19 @@ Mac from sleeping (System Settings -> Energy, or
 Be honest with the user about what this means: automatic login means
 anyone at the machine is in that account without a password, and the
 runner keeps the Mac awake around the clock. Fine for a build box in a
-drawer, worth a thought on a daily machine (FileVault plus a locked
-screen still protects a stolen machine either way).
+drawer, wrong for a daily machine. Two warnings:
+
+- **FileVault defeats automatic login.** After any reboot or power cut
+  the Mac stops at the pre-boot unlock screen and the runner stays dead
+  until someone types the password. On a headless box, either accept
+  that reboots need a manual unlock, or leave FileVault off and rely on
+  physical security.
+- **Daily machine or laptop? Use daily-machine mode instead**: skip
+  automatic login and the `pmset` change entirely. The runner still
+  works whenever the user is logged in; builds just do not run while
+  the machine is asleep or logged out. Tell the user builds will eat 10
+  to 40 minutes of full CPU while they work, and a closed laptop lid
+  means no builds. That trade is usually right for a daily machine.
 
 ## 4. The PATH trap (read this)
 
@@ -114,6 +125,26 @@ jobs:
 Green means: runner online, labels match, Xcode and Unity visible. If it
 never starts, the labels in `runs-on` do not match the runner's labels
 (check Settings -> Actions -> Runners).
+
+## Teardown
+
+To cleanly undo everything this skill set up (machine sold, project
+dead, or moving to a new Mac):
+
+```bash
+cd ~/actions-runner-mygame
+./svc.sh stop && ./svc.sh uninstall
+./config.sh remove --token <fresh-token-from-the-runners-page>
+security delete-keychain ci-mygame   # the CI keychain
+sudo pmset -a sleep 1                # restore sleep (pick your old value)
+```
+
+Then: disable automatic login (System Settings -> Users & Groups),
+revoke the ASC API key (Users and Access -> Integrations), remove the
+deploy key from the certs repo, and delete the repo's Actions secrets.
+Moving to a new Mac instead? Nothing Apple-side changes: install a
+runner on the new machine, run the same workflows, and match restores
+the certs from the repo on the first build.
 
 ## Security notes for self-hosted runners
 

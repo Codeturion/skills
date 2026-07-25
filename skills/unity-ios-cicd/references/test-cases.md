@@ -24,9 +24,13 @@ GitHub Actions runner.
 - **Signing bootstrap re-runnable**: `setup_signing` was run more than
   once on the reference setup (initial setup, then again during
   debugging) with no manual cleanup between runs.
-- **Fresh-keychain pattern**: both lanes delete and recreate the `ci`
-  keychain on every run; hundreds of runs, no keychain-state carryover
-  failures since the pattern was adopted.
+- **Fresh-keychain pattern**: both lanes delete and recreate the CI
+  keychain on every run; many runs over weeks, no keychain-state
+  carryover failures since the pattern was adopted. The reference
+  setup predates the per-app naming rule in fastlane-reference.md (it
+  used a single shared name and only one of its runners signs iOS);
+  the rule exists exactly because a second signing repo on the same
+  Mac would race that shared name.
 
 ## Facts that were learned by failing
 

@@ -39,19 +39,39 @@ skipped. Run the commands over SSH or in a terminal on the build Mac.
 
 1. **Homebrew installed?** `command -v brew`. If missing, install it
    from brew.sh first (needs an admin user, one sudo prompt).
-2. **Xcode ready?** Run `sudo xcodebuild -license accept`, then
-   `xcodebuild -runFirstLaunch`. On Xcode 15 and newer the iOS platform
-   is a separate download: `xcodebuild -downloadPlatform iOS`. Verify
-   with `xcodebuild -version`.
-3. **Unity licensed on this machine?** Batchmode needs an activated
+2. **Enough disk?** `df -h /`. Xcode, Unity, `Library/`, DerivedData
+   and checkouts together want 100 GB free or more. Clear space now,
+   not at a dead build in a month.
+3. **Xcode installed and ready?** Xcode itself is not a given on a
+   fresh Mac: it is a 40+ GB install from the App Store (GUI) or as a
+   .xip from developer.apple.com/download (works over SSH with `scp` +
+   `xip --expand`). Budget hours for the download. Then run
+   `sudo xcodebuild -license accept`, then `xcodebuild -runFirstLaunch`.
+   On Xcode 15 and newer the iOS platform is another multi-GB download:
+   `xcodebuild -downloadPlatform iOS`. Verify with
+   `xcodebuild -version`.
+4. **Unity licensed on this machine?** Batchmode needs an activated
    license and fails with "No valid Unity license" without one.
-   Signing into Unity Hub needs a GUI once: on a headless Mac, enable
-   Screen Sharing (System Settings -> General -> Sharing) and connect
-   with the Finder (Cmd+K, `vnc://<mac-name>.local`) for that one
-   session. Sign in to Hub (Personal), or activate with the licensing
-   client or `-serial` (Pro). Verify by running any `-batchmode -quit`
-   command and checking the log.
-4. **Project opens on this machine?** Open the project once (or run a
+   Signing into Unity Hub needs a GUI once. Sitting at the Mac: just
+   open Hub and sign in. Headless Mac: enable Screen Sharing over SSH
+   first (System Settings is itself a GUI, so use the command line):
+
+   ```bash
+   sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart \
+     -activate -configure -access -on -restart -agent
+   # allow plain VNC clients (needed from Windows/Linux):
+   sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart \
+     -configure -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw <a-password>
+   ```
+
+   Then connect from another Mac (Finder, Cmd+K,
+   `vnc://<mac-name>.local`) or from Windows/Linux with any VNC client
+   (RealVNC, TigerVNC). Use that one GUI session for everything GUI in
+   this checklist (Hub sign-in, automatic login in Phase 1). Sign in to
+   Hub (Personal), or activate with the licensing client or `-serial`
+   (Pro). Verify by running any `-batchmode -quit` command and checking
+   the log.
+5. **Project opens on this machine?** Open the project once (or run a
    batchmode import) so `Library/` builds and packages resolve.
 
 ## Step 1: Interview the user
@@ -191,7 +211,11 @@ The `beta` lane signs the exported project and uploads it. It also:
   (`latest_testflight_build_number + 1`), so numbers never collide
 - switches the Xcode project to manual signing with the match profile
 - sets `ITSAppUsesNonExemptEncryption` to false so uploads do not stall
-  on the export compliance question
+  on the export compliance question. **Ask the user first**: this is a
+  legal declaration, and false is only correct when the app uses
+  nothing beyond standard HTTPS. If the app ships its own encryption,
+  remove that line and answer the compliance question honestly in App
+  Store Connect instead.
 - uploads with `skip_waiting_for_build_processing: true` plus a
   changelog: it waits only until the build appears on App Store Connect
   (minutes), not for full processing

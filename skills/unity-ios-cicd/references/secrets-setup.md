@@ -1,5 +1,10 @@
 # Secrets: what to create, where to click, how each is handled
 
+Apple moves its web UI around. If a click path below does not match
+what the user sees, do not stall: search the page for the key words
+(Integrations, Keys, Identifiers) and carry on; the concepts do not
+change.
+
 Seven secrets make signing and upload work. Walk the user through them one
 at a time, in this order. For each one this file says: what it is, how to
 get it, and how it is stored.
@@ -31,8 +36,15 @@ chat. For each secret, ask the user to save the value to a temp file
 ```bash
 gh secret set ASC_KEY_CONTENT -R YOURORG/YOURREPO < AuthKey_XXXX.p8
 gh secret set ASC_KEY_ID -R YOURORG/YOURREPO --body "ABC123DEFG"
-rm -f AuthKey_XXXX.p8   # remove the local copy once it is stored
+gh secret list -R YOURORG/YOURREPO   # confirm they landed BEFORE deleting
+rm -f AuthKey_XXXX.p8   # only after the list shows the secret
 ```
+
+Secrets are write-only: once stored they cannot be read back to check.
+So always verify with `gh secret list` (right repo, right names, fresh
+timestamps) before deleting a one-shot file like the .p8. If the set
+went to the wrong repo and the file is already gone, the recovery is
+revoke and regenerate the key (section 1).
 
 Passwords the skill invents (`MATCH_PASSWORD`, `CI_KEYCHAIN_PASSWORD`)
 need no user step at all: generate and store in one pipe, then show the
@@ -64,8 +76,12 @@ the user:
 1. First register the bundle id: developer.apple.com -> Certificates,
    Identifiers & Profiles -> Identifiers -> **+** -> App IDs -> App.
    Description: the app name. Bundle ID: **explicit**, reverse-DNS,
-   for example `com.studioname.gamename`. Capabilities can stay
-   default. Register.
+   for example `com.studioname.gamename`. Capabilities: default is
+   fine for a plain game, but if the app uses Push Notifications, Game
+   Center, in-app purchases, or Sign in with Apple, tick those now.
+   Adding a capability later invalidates the provisioning profile;
+   the fix is re-running the Signing setup workflow, but knowing that
+   beats a mystery failure. Register.
 2. Then the app: appstoreconnect.apple.com -> My Apps -> **+** ->
    New App. Platform iOS. Name: what players see, unique across the
    whole App Store (add a word if taken). Bundle ID: pick the one just
@@ -165,9 +181,18 @@ generates and stores it in one pipe, see above):
 openssl rand -base64 24
 ```
 
-The user must store it in a password manager. If it is lost, the certs repo is
-unreadable and match must start over (`fastlane match nuke` and re-run
-the bootstrap).
+The user must store it in a password manager. If it is lost, the certs
+repo is unreadable and match must start over.
+
+**Warning about `fastlane match nuke`**: it does not just clean the
+repo, it REVOKES certificates on the Apple developer account,
+team-wide. Every other app or pipeline signing with that team's
+distribution certificate breaks at its next build. Never run it
+without telling the user exactly that and getting an explicit yes.
+For a lost password with certs still valid on Apple's side, prefer
+emptying the certs repo and importing the existing cert with
+`fastlane match import`, or re-running `setup_signing`; nuke is the
+last resort.
 
 ## 5. `CI_KEYCHAIN_PASSWORD`
 
