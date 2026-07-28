@@ -151,7 +151,7 @@
 
   main { padding: 0 1.4rem 3rem; }
   :root { --col-skill: 15rem; --col-verified: 9.5rem; --col-area: 6.8rem; }
-  .cols, .row-head { display: grid; grid-template-columns: minmax(0, var(--col-skill)) minmax(0, 1fr) var(--col-verified) var(--col-area) 15.8rem; gap: 1rem; }
+  .cols, .row-head { display: grid; grid-template-columns: minmax(0, var(--col-skill)) minmax(0, 1fr) var(--col-verified) var(--col-area) 13.4rem; gap: 1rem; }
   .cols > span { position: relative; }
   .grip { position: absolute; top: -0.4rem; bottom: -0.4rem; right: -0.65rem; width: 0.9rem; cursor: col-resize; }
   .grip::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border); }
@@ -171,7 +171,7 @@
   .cell-act { display: flex; justify-content: flex-end; gap: 0.4rem; }
   .btn-copy.prompt { border-color: var(--border-strong); background: transparent; color: var(--text); }
   .btn-copy.prompt:hover { border-color: var(--muted); }
-  .btn-copy { font-size: 0.7rem; padding: 0.32rem 0.6rem; border-radius: 6px; min-height: 32px; min-width: 7.6rem; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; cursor: pointer; border: 1px solid var(--primary); background: var(--primary); color: var(--btn-fg); }
+  .btn-copy { font-size: 0.7rem; padding: 0.32rem 0.6rem; border-radius: 6px; min-height: 32px; min-width: 6.4rem; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; cursor: pointer; border: 1px solid var(--primary); background: var(--primary); color: var(--btn-fg); }
   .btn-copy.done, .btn-big.done { background: var(--green); border-color: var(--green); color: var(--bg); }
   .btn-copy:disabled { cursor: default; border-color: var(--planned-border); background: transparent; color: var(--amber); }
 
