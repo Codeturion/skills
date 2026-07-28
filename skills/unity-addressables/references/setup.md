@@ -1,13 +1,12 @@
 # Setup
 
 One-time steps. All idempotent, safe to re-run. Needs a running headless editor
-(see the unity-cli skill).
+(see the unity-headless-cli skill).
 
 ## 1. Install the package
 
-Install the latest `com.unity.addressables` with the unity-package-management
-skill, which resolves the newest compatible version for the project's Unity
-release. Without it, ask the editor for the latest:
+Install the latest `com.unity.addressables`. Ask the editor for the newest
+compatible version:
 
 ```csharp
 var req = UnityEditor.PackageManager.Client.Search("com.unity.addressables");

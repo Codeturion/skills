@@ -14,7 +14,7 @@ daily use, builds, and remote content. Everything runs headless. No menu paths.
 - Unity 6 (verified on 6000.3) and Addressables 2.x or 3.x (verified on
   2.9.0 and 3.1.0).
 - The Unity CLI with a running headless editor, so `unity command eval` works.
-  If the project is not set up for that yet, use the **unity-cli** skill first.
+  If the project is not set up for that yet, use the **unity-headless-cli** skill first.
 - To add the package headless, use the **unity-package-management** skill, or
   follow the latest-version lookup in [references/setup.md](references/setup.md).
 
