@@ -9,7 +9,17 @@ reference. All four are listed here with the fix.
 A pooled object comes back exactly as it died. `SetActive(false)` stops
 the object's own coroutines and its animation playback (and Animator
 state is lost on disable by default), but it resets none of your fields
-and none of the component state below. Reset in `actionOnRelease`
+and none of the component state below.
+
+Concrete example, verified on 6000.3: a particle effect that a tween
+shrinks to `localScale = 0.1` before despawn comes back at 0.1 on the
+next spawn, and a modified `ParticleSystem` module value (for example
+`main.startSize` changed at runtime) also survives the SetActive cycle.
+Anything a tween, a script, or an animation changed during the object's
+life is still changed when the pool hands it out again. That is why the
+checklist below exists, and why the tween itself must be killed by
+target on release (section 3): a still-running shrink tween would keep
+shrinking the object's NEXT life. Reset in `actionOnRelease`
 (so objects sit clean) and walk this list for every component on the
 pooled prefab:
 

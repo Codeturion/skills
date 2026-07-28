@@ -181,6 +181,10 @@ uses the claim only softly (warm-up rationale).
       Assembly-CSharp. Files removed after the check. (2026-07-28)
 - [x] GetComponentsInChildren<T>(bool, List<T>) non-alloc overload exists:
       confirmed by reflection on the live editor. (2026-07-28)
+- [x] Stale state survives the SetActive cycle: localScale set to 0.1 and
+      a runtime-modified ParticleSystem main.startSize (0.05) both kept
+      their values after SetActive(false)/SetActive(true). The reused
+      object comes back exactly as it died. (2026-07-28)
 
 ## Play-mode checks (VERIFIED 2026-07-28, PoolPlayVerify.cs, empty scene, batchmode)
 

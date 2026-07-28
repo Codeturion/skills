@@ -1,6 +1,6 @@
 ---
 name: unity-object-pooling
-description: Use when a Unity project spawns and destroys objects often (bullets, enemies, particles, UI rows, popups) and needs pooling, or when the profiler shows GC spikes or frame hitches from Instantiate, Destroy, or temporary collections. Covers the UnityEngine.Pool API: ObjectPool, LinkedPool, GenericPool, ListPool, DictionaryPool, HashSetPool, and IObjectPool for tests. Also use to fix pooled-object bugs like stale state, double release, or ghost coroutines, and to migrate existing Instantiate/Destroy code to pools.
+description: Use when a Unity project spawns and destroys objects often (bullets, enemies, particles, UI rows, popups) and needs pooling, or when the profiler shows GC spikes or frame hitches from Instantiate, Destroy, or temporary collections. Covers the whole UnityEngine.Pool API (ObjectPool, LinkedPool, GenericPool, ListPool, DictionaryPool, HashSetPool, and IObjectPool for tests). Also use to fix pooled-object bugs like stale state, double release, or ghost coroutines, and to migrate existing Instantiate/Destroy code to pools.
 ---
 
 # Unity Object Pooling
