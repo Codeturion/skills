@@ -42,7 +42,7 @@ public static class CIBuild
 
 Then from CI: `unity build <project> --target <t> --execute-method CIBuild.BuildAll`
 where `BuildAll` builds content first, then calls `BuildPipeline.BuildPlayer`.
-See the unity-cli skill for the full CI recipes (auth, license, build command).
+See the unity-headless-cli skill for the full CI recipes (auth, license, build command).
 
 ## Verify with a real content build
 

@@ -34,8 +34,8 @@ On a display less machine, the GUI editor hangs in AppKit's finish launching han
 ```bash
 unity command --project-path <project>                    # list tools
 unity command create_gameobject --name Spawner --components Light --project-path <project>
-unity command add_component --gameobject Spawner --component Rigidbody --project-path <project>
-unity command find_assets --query "t:Prefab" --project-path <project>
+unity command add_component --target Spawner --type Rigidbody --project-path <project>
+unity command find_assets --name GameConfig --project-path <project>   # or --type <TypeName> / --label <label>
 unity command eval "return Application.unityVersion;" --project-path <project>
 unity command eval_file snippet.cs --project-path <project>
 unity command run_tests --project-path <project>
