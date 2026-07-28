@@ -3,10 +3,10 @@
   "slug": "unity-headless-cli",
   "area": "core",
   "status": "verified",
-  "verified": "2026-07 · 6000.3",
+  "verified": "2026-07 \u00b7 6000.3",
   "blurb": "Set up Unity's official CLI and drive the editor over SSH, no GUI, no MCP server",
   "detail": "Installs and wires up Unity's official CLI (com.unity.pipeline) so a terminal or an agent can drive the editor: create GameObjects, edit assets, run tests, eval live C# with 200 to 600 ms round trips. The part worth reading is keeping the editor alive between calls without deadlocking on the compile pipeline.",
-  "sections": "bootstrap · unity <cmd> · eval / eval_file · run_tests · custom [CliCommand] tools",
+  "sections": "bootstrap \u00b7 unity <cmd> \u00b7 eval / eval_file \u00b7 run_tests \u00b7 custom [CliCommand] tools \u00b7 test-cases",
   "requires": "nothing, start here",
   "notes": "Verified on macOS with Unity 6000.3. Windows is untested."
 }

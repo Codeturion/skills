@@ -1,7 +1,6 @@
 ---
 name: unity-headless-cli
-description: Set up the current Unity project to be driven headless from the terminal (no GUI, no MCP server), then use that workflow. On invocation it adds com.unity.pipeline, writes docs/unity-cli-ref.md, and points CLAUDE.md at it, so this and future Claude sessions can create GameObjects, add components, edit assets, run tests, and evaluate live C# over SSH. Use when the user wants to "set up headless Unity", "drive Unity from the terminal", "add the unity CLI to this project", or run Unity in CI.
-license: MIT
+description: Use when the user wants to "set up headless Unity", "drive Unity from the terminal", "add the unity CLI to this project", or run Unity in CI. Sets up the current Unity project to be driven headless from the terminal (no GUI, no MCP server), then uses that workflow. On invocation it adds com.unity.pipeline, writes docs/unity-cli-ref.md, and points CLAUDE.md at it, so this and future Claude sessions can create GameObjects, add components, edit assets, run tests, and evaluate live C# over SSH.
 ---
 
 # Unity Headless CLI: setup and use
@@ -46,7 +45,7 @@ Copy the bundled reference into the project so it lives with the code:
 
 ```bash
 mkdir -p <root>/docs
-cp "${CLAUDE_PLUGIN_ROOT}/skills/unity-headless-cli/reference/unity-cli-ref.md" <root>/docs/unity-cli-ref.md
+cp "${CLAUDE_PLUGIN_ROOT}/skills/unity-headless-cli/references/unity-cli-ref.md" <root>/docs/unity-cli-ref.md
 ```
 
 (`${CLAUDE_PLUGIN_ROOT}` is the installed plugin's directory. If it is not set, use this skill's own folder as the source.) If `docs/unity-cli-ref.md` already exists, overwrite it only after confirming, so you do not clobber local edits.
@@ -91,8 +90,8 @@ unity command --project-path <root>
 
 # built in commands
 unity command create_gameobject --name Spawner --components Light --project-path <root>
-unity command add_component --gameobject Spawner --component Rigidbody --project-path <root>
-unity command find_assets --query "t:Prefab" --project-path <root>
+unity command add_component --target Spawner --type Rigidbody --project-path <root>
+unity command find_assets --name GameConfig --project-path <root>   # or --type <TypeName> / --label <label>
 
 # live C# on the editor main thread
 unity command eval "return Application.unityVersion;" --project-path <root>
@@ -124,4 +123,4 @@ done
 - Stale Unity Hub keychain items can make every CLI command hang on an invisible GUI keychain prompt (`--non-interactive` hangs too). Clear the stale keychain items.
 - `eval` runs arbitrary C# and is gated behind the pipeline server's localhost bearer token by design. Treat it with the same care as running project code.
 
-Full detail lives in `docs/unity-cli-ref.md` after bootstrap, or in `reference/unity-cli-ref.md` in this skill.
+Full detail lives in `docs/unity-cli-ref.md` after bootstrap, or in `references/unity-cli-ref.md` in this skill.
