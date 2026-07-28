@@ -150,8 +150,8 @@
   .chip.on { border-color: var(--primary); background: var(--chip-active-bg); color: var(--primary-soft); }
 
   main { padding: 0 1.4rem 3rem; }
-  :root { --col-skill: 15rem; --col-verified: 9.5rem; --col-area: 5.5rem; }
-  .cols, .row-head { display: grid; grid-template-columns: minmax(0, var(--col-skill)) minmax(0, 1fr) var(--col-verified) var(--col-area) 13rem; gap: 1rem; }
+  :root { --col-skill: 15rem; --col-verified: 9.5rem; --col-area: 6.8rem; }
+  .cols, .row-head { display: grid; grid-template-columns: minmax(0, var(--col-skill)) minmax(0, 1fr) var(--col-verified) var(--col-area) 15.8rem; gap: 1rem; }
   .cols > span { position: relative; }
   .grip { position: absolute; top: -0.4rem; bottom: -0.4rem; right: -0.65rem; width: 0.9rem; cursor: col-resize; }
   .grip::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border); }
