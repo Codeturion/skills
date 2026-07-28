@@ -15,11 +15,19 @@ Concrete example, verified on 6000.3: a particle effect that a tween
 shrinks to `localScale = 0.1` before despawn comes back at 0.1 on the
 next spawn, and a modified `ParticleSystem` module value (for example
 `main.startSize` changed at runtime) also survives the SetActive cycle.
-Anything a tween, a script, or an animation changed during the object's
-life is still changed when the pool hands it out again. That is why the
-checklist below exists, and why the tween itself must be killed by
-target on release (section 3): a still-running shrink tween would keep
-shrinking the object's NEXT life. Reset in `actionOnRelease`
+The general rule: anything that changed during the object's life is
+still changed when the pool hands it out again. That covers every
+mutation source (tweens, scripts, animations, physics) and every kind of
+state: transform values (scale, rotation, position if the spawner does
+not set it), component settings, your own fields, and dependencies. The
+dependency class is the sneakiest: a reference to a target that died, an
+event subscription to a system from the last level, an injected manager
+that no longer exists. Those do not just misbehave, they throw
+MissingReferenceException later or keep dead object graphs alive. That
+is why the checklist below exists, why its last two rows are about
+references, and why the tween itself must be killed by target on
+release (section 3): a still-running shrink tween would keep shrinking
+the object's NEXT life. Reset in `actionOnRelease`
 (so objects sit clean) and walk this list for every component on the
 pooled prefab:
 
