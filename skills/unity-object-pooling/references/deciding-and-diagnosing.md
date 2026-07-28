@@ -220,5 +220,6 @@ greps accused.
 
 ## Sizing and warm-up
 
-Moved next to the implementation content: see the "Sizing and warm-up"
-section of [objectpool-basics.md](objectpool-basics.md).
+See the "Sizing and warm-up" section of
+[objectpool-basics.md](objectpool-basics.md), next to the implementation
+content.

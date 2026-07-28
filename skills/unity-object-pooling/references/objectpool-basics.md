@@ -33,7 +33,7 @@ Verified semantics:
 - `maxSize` caps the stored (inactive) count, never the live count.
   Releasing into a full pool calls `actionOnDestroy` on the object.
 - `defaultCapacity` only sizes the internal stack. It does not create
-  objects. Warm-up is your job (see deciding-and-diagnosing.md).
+  objects. Warm-up is your job (see Sizing and warm-up below).
 - Counters: `CountActive`, `CountInactive`, `CountAll` (created minus
   destroyed). Use `CountActive` peaks to size the pool.
 - `Clear()` destroys all stored objects. Call it when the owner dies.

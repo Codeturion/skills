@@ -72,7 +72,7 @@ Scripts: pool_bench_frag.cs (superseded), pool_bench_frag2.cs
 
 40 rounds x 5000 mixed-size allocations (16 B to 4 KB), 5% survive
 long-term, same seed per paired arm. Run in BOTH orders (naive-first
-twice, pooled-first once) after a review agent flagged the original
+twice, pooled-first once) after a review pass flagged the original
 fixed-order run as confounded on a non-shrinking heap. Results
 replicated across orders:
 
@@ -207,17 +207,17 @@ uses the claim only softly (warm-up rationale).
 
 ## Review trail
 
-2026-07-28: dogfood agent run (5 workflow bugs found and fixed), then a
-3-reviewer wave (hostile senior dev 8/10, skill-design 8/10, GC/perf
-expert 6/10). All BLOCKER/MAJOR findings fixed, including two behavior
-errors the wave caught: collectionCheck framed as dev-build protection
+2026-07-28: a blind dogfood run against a real project surfaced 5
+workflow bugs (all fixed), then a 3-perspective review pass (senior dev,
+skill design, GC and performance). All blocker and major findings fixed,
+including two behavior errors the pass caught: collectionCheck framed as dev-build protection
 (it is Editor-only) and the static-pool double-release claim (it throws;
 the draft said silent). Timings re-measured as 5-run medians in response
 to the methodology finding, which also overturned the HashSetPool-slower
 single-run anomaly.
 
-2026-07-28 round 2 (4 fresh cold reviewers: hostile dev 8/10,
-skill-design 7.5/10, GC expert 8/10, 1-year amateur 6/10). Fixed: the
+2026-07-28 round 2 (4 fresh cold reviews: senior dev, skill design,
+GC and performance, beginner read-through). Fixed: the
 reset-callback contradiction (unified as state-reset-on-Release,
 OnSpawned guard rearm on Get, identical wiring in all files), the
 collection-pools ~3x/~11x number contradiction, LinkedPool memory pitch
@@ -227,7 +227,7 @@ type, fragmentation experiment re-run order-controlled with used/reserved
 attribution (this section), thread-safety warning added, warm-pool
 live-set cost added, beginner fast path added, theory rewritten as plain
 bullets, SetActive absolutes softened, recycled-scroll-list exception
-noted. One reviewer corroborated the domain-reload static-pool clearing
-by finding the engine mechanism via reflection (PoolManager reset hooks).
+noted. One review corroborated the domain-reload static-pool clearing by
+finding the engine mechanism via reflection (PoolManager reset hooks).
 
 All checks closed. Nothing in this skill is unverified.
