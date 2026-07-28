@@ -35,6 +35,16 @@
       "category": "development",
       "source": "./skills/unity-headless-cli",
       "homepage": "https://github.com/Codeturion/skills"
+    },
+    {
+      "name": "unity-object-pooling",
+      "description": "Diagnose GC churn and fragmentation, then fix it with UnityEngine.Pool: all six pool types, the owner pattern with no pool manager, a per-component reset checklist, and migration recipes. Every claim measured on a real editor.",
+      "author": {
+        "name": "Codeturion"
+      },
+      "category": "optimization",
+      "source": "./skills/unity-object-pooling",
+      "homepage": "https://github.com/Codeturion/skills"
     }
   ]
 }

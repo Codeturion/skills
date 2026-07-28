@@ -1,0 +1,12 @@
+{
+  "id": "pooling",
+  "slug": "unity-object-pooling",
+  "area": "optimization",
+  "status": "verified",
+  "verified": "2026-07 · 6000.3",
+  "blurb": "Diagnose GC churn, then pool with UnityEngine.Pool: no manager, no package, measured numbers",
+  "detail": "Evidence-first pooling on Unity's non-compacting heap. Grep recipes find the churn, a 20-line sampler confirms it (reserved-vs-used gap), a measured decision table picks the pool type, and the owner pattern implements it in ~30 lines with no pool manager. Covers all six UnityEngine.Pool types plus IObjectPool, a per-component reset checklist, and the verified gotchas: collectionCheck is Editor-only, and Unity clears its static pools between play sessions.",
+  "sections": "deciding-and-diagnosing · objectpool-basics · gameobject-pooling · collection-pools · pitfalls · migration · test-cases",
+  "requires": "nothing, core engine API (Unity 2021.1+)",
+  "notes": "Every number is a 5-run median from a real editor; overturned results kept in the record as lessons."
+}
