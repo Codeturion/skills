@@ -34,7 +34,9 @@ behind every recommendation.
    one that works.
 4. **Walk the reset checklist** if GameObjects are pooled. Stale state is
    where almost every pooling bug lives:
-   [references/pitfalls.md](references/pitfalls.md).
+   [references/pitfalls.md](references/pitfalls.md). If you cannot tell
+   what mutates the object or what its correct starting state is, ask
+   the user instead of guessing.
 5. **Verify:** play, spawn past the pool size, release everything, spawn
    again. Watch for ghosts, leaks, and double-release errors.
 

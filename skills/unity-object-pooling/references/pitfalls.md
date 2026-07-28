@@ -49,6 +49,12 @@ The pattern that keeps this clean: one `ResetForPool()` method on the
 pooled root script that the pool's `actionOnRelease` calls. New component
 on the prefab = new line in that method. Reviewers can see it.
 
+When unsure, ask the user. If you cannot tell from the code what mutates
+this object during its life, what its correct starting state is, or
+which systems hold references to it, ask instead of guessing. A wrong
+guess here ships a stale-state bug that only shows on reuse; the user
+usually knows the answer in one sentence.
+
 Two exceptions run on Get, not on Release: the double-release guard flag
 (`OnSpawned()` sets `_released = false`; rearming it on Release would
 reopen the double-release window) and `TrailRenderer.Clear()` (the row
