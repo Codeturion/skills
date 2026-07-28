@@ -4,7 +4,7 @@
   const LIMITS = {
     skill: { min: 96, max: 480 },
     verified: { min: 64, max: 240 },
-    area: { min: 48, max: 176 },
+    area: { min: 56, max: 176 },
   };
   const root = document.documentElement;
   let saved = {};

@@ -165,9 +165,9 @@
   .sname { font-size: 0.82rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
   .sname.avail { color: var(--accent); }
   .blurb { color: var(--text-soft); font-size: 0.78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .verified { color: var(--muted); font-size: 0.74rem; font-variant-numeric: tabular-nums; }
+  .verified { color: var(--muted); font-size: 0.74rem; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
   .verified.has-date { color: var(--cyan); }
-  .area { color: var(--purple); font-size: 0.72rem; }
+  .area { color: var(--purple); font-size: 0.72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
   .cell-act { display: flex; justify-content: flex-end; gap: 0.4rem; }
   .btn-copy.prompt { border-color: var(--border-strong); background: transparent; color: var(--text); }
   .btn-copy.prompt:hover { border-color: var(--muted); }
