@@ -140,7 +140,7 @@ done
 ## Gotchas
 
 - The CLI is beta and the package is experimental (`-exp`). Expect churn between versions.
-- Stale Unity Hub keychain items make every command that touches auth or licensing hang on an invisible GUI keychain prompt (`unity doctor`, `unity auth status`, `unity run`, `unity projects create`). `--non-interactive` hangs too. `unity command` and `unity job` are not affected. Clear the stale keychain items.
+- Commands that go through the auth or licensing layer can hang with no output: `unity doctor`, `unity auth status`, `unity license status`, `unity run`, `unity projects create`. `--non-interactive` hangs too. Seen on a headless Mac with Unity Hub running; stale Hub keychain items caused the same symptom before. `unity command`, `unity job`, `unity editors list` are not affected. Always wrap these commands in a timeout in scripts.
 - `eval` runs arbitrary C# and is gated behind the pipeline server's localhost bearer token by design. Treat it with the same care as running project code.
 
 Full detail lives in `docs/unity-cli-ref.md` after bootstrap, or in `references/unity-cli-ref.md` in this skill.

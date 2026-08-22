@@ -41,10 +41,13 @@ project on com.unity.pipeline 0.4.0-exp.1, and a scratch project on
 ### Not verified (2026-08-22)
 
 - `unity run <project> --command eval -- --code "..."`: hung for 6 min
-  with no editor process spawned. `unity doctor` and `unity auth status`
-  hang the same way on this rig: the stale-keychain gotcha. Documented
-  from `--help` only. Re-run after the keychain is cleaned.
-- `unity projects create`: hung the same way.
+  with no editor process spawned. `unity doctor`, `unity auth status`,
+  `unity license status`, `unity cloud status`, `unity projects create`
+  hang the same way on this rig: no output, no CLI log line after
+  startup, no socket, no child process, with `--non-interactive` and
+  under a pty. Keychain reads succeed without a prompt, so this is NOT
+  the stale-keychain case. Unity Hub was running at the time. Cause
+  open. `unity run --command` is documented from `--help` only.
 - `unity test --coverage`, `unity build --profile`: not run, documented
   from `--help`.
 

@@ -146,7 +146,7 @@ Everything below is a `unity command <name>`:
 ## Honest caveats
 
 - Everything here is experimental. The CLI is beta, the package is `-exp`. Expect churn between versions.
-- Stale Unity Hub keychain items make every command that touches auth or licensing hang on an invisible GUI keychain prompt: `unity doctor`, `unity auth status`, `unity run`, `unity projects create`. `--non-interactive` hangs too. `unity command`, `unity job`, `unity editors list` are not affected. Clear the stale keychain items.
+- Commands that go through the auth or licensing layer can hang with no output, no log line, and no prompt: `unity doctor`, `unity auth status`, `unity license status`, `unity cloud status`, `unity run`, `unity projects create`. `--non-interactive` does not help. Seen on a headless Mac with Unity Hub running. Stale Hub keychain items caused the same symptom before (an invisible GUI prompt), so check those first. `unity command`, `unity job`, `unity editors list`, `unity projects list` are not affected. Wrap the hanging family in a timeout (`perl -e 'alarm 60; exec @ARGV' unity doctor`).
 - An old `com.unity.pipeline` rejects newer CLI flags with "does not support ...". Run `unity pipeline upgrade` and restart the editor.
 - Unity ships its own agent skill (`unity skill install <client>`) and an MCP server (`unity mcp`). This reference is the no-MCP path: one binary, one HTTP hop, works over SSH.
 - The pipeline HTTP server binds localhost with a bearer token, and `eval` is gated behind that token by design. Good, since `eval` runs arbitrary C#.
