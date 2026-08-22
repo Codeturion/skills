@@ -46,8 +46,15 @@ project on com.unity.pipeline 0.4.0-exp.1, and a scratch project on
   hang the same way on this rig: no output, no CLI log line after
   startup, no socket, no child process, with `--non-interactive` and
   under a pty. Keychain reads succeed without a prompt, so this is NOT
-  the stale-keychain case. Unity Hub was running at the time. Cause
-  open. `unity run --command` is documented from `--help` only.
+  the stale-keychain case. Same on CLI 1.0.0-beta.6. A stack sample
+  shows the .NET licensing SDK blocked on a unix socket. The only
+  licensing endpoint on the machine was a 4 day old orphaned
+  `Unity.Licensing.Client` owned by the running editors. Prime suspect,
+  not yet confirmed by a restart. `unity run --command` is documented
+  from `--help` only.
+- `brew install --cask unity-cli` (1.0.0-beta.6): installs, but the
+  binary hangs in dyld at its Caskroom path, with or without xattrs. A
+  plain copy of the same file runs. Keep the curl install as primary.
 - `unity test --coverage`, `unity build --profile`: not run, documented
   from `--help`.
 
