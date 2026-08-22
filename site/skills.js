@@ -20,10 +20,10 @@ const SKILLS = [
     "slug": "unity-headless-cli",
     "area": "core",
     "status": "verified",
-    "verified": "2026-07 · 6000.3",
+    "verified": "2026-08 · 6000.3",
     "blurb": "Set up Unity's official CLI and drive the editor over SSH, no GUI, no MCP server",
     "detail": "Installs and wires up Unity's official CLI (com.unity.pipeline) so a terminal or an agent can drive the editor: create GameObjects, edit assets, run tests, eval live C# with 200 to 600 ms round trips. The part worth reading is keeping the editor alive between calls without deadlocking on the compile pipeline.",
-    "sections": "bootstrap · unity <cmd> · eval / eval_file · run_tests · custom [CliCommand] tools",
+    "sections": "bootstrap · unity <cmd> · eval / eval_file · run_tests · detached jobs · custom [CliCommand] tools · test-cases",
     "requires": "nothing, start here",
     "notes": "Verified on macOS with Unity 6000.3. Windows is untested.",
     "repo": "https://github.com/Codeturion/skills/tree/main/skills/unity-headless-cli",
@@ -42,6 +42,20 @@ const SKILLS = [
     "notes": "Verified against a live pipeline shipping TestFlight builds from a headless Apple Silicon Mac mini. CocoaPods projects (Firebase, ad SDKs) covered: EDM4U export and workspace build verified on a real editor (signed pods upload not re-verified, only the build target differs). Ends at TestFlight; needs the 99 USD/year Apple Developer membership and a Mac that stays awake.",
     "repo": "https://github.com/Codeturion/skills/tree/main/skills/unity-ios-cicd",
     "name": "unity-ios-cicd"
+  },
+  {
+    "id": "pooling",
+    "slug": "unity-object-pooling",
+    "area": "optimization",
+    "status": "verified",
+    "verified": "2026-07 · 6000.3",
+    "blurb": "Diagnose GC churn, then pool with UnityEngine.Pool: no manager, no package, measured numbers",
+    "detail": "Evidence-first pooling on Unity's non-compacting heap. Grep recipes find the churn, a 20-line sampler confirms it (reserved-vs-used gap), a measured decision table picks the pool type, and the owner pattern implements it in ~30 lines with no pool manager. Covers all six UnityEngine.Pool types plus IObjectPool, a per-component reset checklist, and the verified gotchas: collectionCheck is Editor-only, and Unity clears its static pools between play sessions.",
+    "sections": "deciding-and-diagnosing · objectpool-basics · gameobject-pooling · collection-pools · pitfalls · migration · test-cases",
+    "requires": "nothing, core engine API (Unity 2021.1+)",
+    "notes": "Every number is a 5-run median from a real editor; overturned results kept in the record as lessons.",
+    "repo": "https://github.com/Codeturion/skills/tree/main/skills/unity-object-pooling",
+    "name": "unity-object-pooling"
   },
   {
     "id": "playmode",
@@ -115,6 +129,6 @@ const SKILLS = [
   }
 ];
 
-const AREAS = ["all","assets","core","build","testing","optimization"];
+const AREAS = ["all","assets","core","build","optimization","testing"];
 const STATUSES = ["all","verified","planned"];
 const RANK = { verified: 0, draft: 1, planned: 2 };

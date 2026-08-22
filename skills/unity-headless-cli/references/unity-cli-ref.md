@@ -15,9 +15,23 @@ Distilled from the official Unity CLI reference: https://docs.unity.com/en-us/un
 ## Install
 
 ```bash
+brew install --cask unity-cli      # macOS
+# or
 curl -fsSL https://public-cdn.cloud.unity3d.com/hub/prod/cli/install.sh | UNITY_CLI_CHANNEL=beta bash
 unity --version
 unity pipeline install --project-path <project>
+unity pipeline upgrade --project-path <project>   # later: move com.unity.pipeline forward
+```
+
+The script installs to `~/.unity/bin/unity` and adds it to `PATH` through `~/.unity/env` in `.zshrc`. Non-login shells (SSH commands, CI steps) do not load `.zshrc`, so export `PATH=$HOME/.unity/bin:$PATH` there.
+
+Agent and CI shell setup:
+
+```bash
+export UNITY_PROJECT_PATH=<project>   # replaces --project-path on every call
+export UNITY_NO_PAGER=1               # long output opens `less` and blocks
+export UNITY_NON_INTERACTIVE=1
+export UNITY_NO_CONSENT_PROMPT=1 UNITY_NO_CRASH_REPORT=1 UNITY_NO_UPDATE_CHECK=1
 ```
 
 ## Launch a headless Editor
@@ -33,6 +47,7 @@ On a display less machine, the GUI editor hangs in AppKit's finish launching han
 
 ```bash
 unity command --project-path <project>                    # list tools
+unity command --query asset --tag assets --limit 10       # filter the list (needs com.unity.pipeline 0.5+)
 unity command create_gameobject --name Spawner --components Light --project-path <project>
 unity command add_component --target Spawner --type Rigidbody --project-path <project>
 unity command find_assets --name GameConfig --project-path <project>   # or --type <TypeName> / --label <label>
@@ -43,7 +58,18 @@ unity command run_tests --project-path <project>
 
 `eval` compiles with Roslyn and runs on the Editor main thread. Engine API, `EditorApplication`, and your own project scripts are all in reach. No recompile, no domain reload.
 
-Prefer `--project-path`. `unity pipeline list` may report a batchmode editor as "not reachable" even while commands work; trust `unity command`, not the list.
+Prefer `--project-path` or `UNITY_PROJECT_PATH`. `unity pipeline list` and `unity editors running` can both show zero rows while batchmode editors answer commands; trust `unity command`, not the lists.
+
+### Detached jobs (long bakes, builds)
+
+Needs com.unity.pipeline 0.5.0-exp.1 or newer.
+
+```bash
+unity command bake_lighting --detach --json   # returns {"jobId": "...", "state": "queued"}
+unity job status <jobId>
+unity job wait <jobId> --json                 # blocks, then prints the command result
+unity job cancel <jobId>
+```
 
 ### Many projects, one terminal
 
@@ -89,10 +115,11 @@ Attributes: `MainThreadRequired` for anything touching engine state; `RuntimeOnl
 
 ## Automation contract
 
-- `--format json|tsv` on any command. Piped stdout defaults to TSV, errors go to stderr.
-- Exit codes: `0` ok, `1` error, `130` cancelled.
-- `unity test <project>`: EditMode/PlayMode with a results report.
-- `unity build`: batchmode build with conventional CI flags.
+- `--format json|tsv|ndjson` on any command, `--json` is shorthand. Piped stdout defaults to TSV, errors go to stderr. With `ndjson`, a failure ends in a `{"type":"result","success":false,...}` frame.
+- Exit codes: `0` ok, `1` error, `2` usage error (bad flag or value), `6` command failed (eval compile error, no editor reachable, test failures, auth or cloud failure), `130` Ctrl+C, `143` SIGTERM.
+- `unity run <project> --command <name> -- <args>`: start a batchmode editor, run one registered `[CliCommand]`, exit. Use `--timeout <seconds>`. No long-lived editor needed.
+- `unity test <project>`: EditMode/PlayMode. `--report-format nunit|junit|nunit,junit`, `--junit-output <path>`, `--coverage` (needs the Code Coverage package), `--coverage-output <dir>`.
+- `unity build <project>`: `--execute-method` is optional now. On Unity 6, `--profile <path-or-name>` builds a Build Profile. Desktop targets build with only `--target` and `--output-path`.
 - `unity open`: resolves the editor version from `ProjectVersion.txt`.
 - CLI logs: `~/Library/Application Support/UnityHub/logs/cli-log.json`.
 
@@ -119,11 +146,14 @@ Everything below is a `unity command <name>`:
 ## Honest caveats
 
 - Everything here is experimental. The CLI is beta, the package is `-exp`. Expect churn between versions.
-- Stale Unity Hub keychain items can make every CLI command hang on an invisible GUI keychain prompt (even `--non-interactive` hangs rather than failing fast). Clear the stale keychain items.
+- Stale Unity Hub keychain items make every command that touches auth or licensing hang on an invisible GUI keychain prompt: `unity doctor`, `unity auth status`, `unity run`, `unity projects create`. `--non-interactive` hangs too. `unity command`, `unity job`, `unity editors list` are not affected. Clear the stale keychain items.
+- An old `com.unity.pipeline` rejects newer CLI flags with "does not support ...". Run `unity pipeline upgrade` and restart the editor.
+- Unity ships its own agent skill (`unity skill install <client>`) and an MCP server (`unity mcp`). This reference is the no-MCP path: one binary, one HTTP hop, works over SSH.
 - The pipeline HTTP server binds localhost with a bearer token, and `eval` is gated behind that token by design. Good, since `eval` runs arbitrary C#.
 
 ## Docs
 
 - Unity CLI reference: https://docs.unity.com/en-us/unity-cli/unity-cli-reference
+- Release notes: https://docs.unity.com/en-us/unity-cli/release-notes
 - Using the Unity CLI: https://docs.unity.com/en-us/unity-cli/use-unity-cli
-- Pipeline package: https://docs.unity3d.com/Packages/com.unity.pipeline@0.3
+- Pipeline package: https://docs.unity3d.com/Packages/com.unity.pipeline@0.5

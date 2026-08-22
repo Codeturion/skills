@@ -23,11 +23,14 @@ Use the current git repo root (`git rev-parse --show-toplevel`), or the director
 unity --version
 ```
 
-If that fails, tell the user you need to install the Unity CLI (beta) and ask to proceed. On yes:
+If that fails, tell the user you need to install the Unity CLI (beta) and ask to proceed. On yes, use one of:
 
 ```bash
+brew install --cask unity-cli
 curl -fsSL https://public-cdn.cloud.unity3d.com/hub/prod/cli/install.sh | UNITY_CLI_CHANNEL=beta bash
 ```
+
+The script installs to `~/.unity/bin/unity`. Make sure that it is on `PATH` in non-login shells (SSH, CI).
 
 The CLI is machine level, so never install it silently. If the user declines, stop and report what is missing.
 
@@ -37,7 +40,7 @@ The CLI is machine level, so never install it silently. If the user declines, st
 unity pipeline install --project-path <root>
 ```
 
-This adds `com.unity.pipeline` to `Packages/manifest.json`. If it is already present, this is a no-op.
+This adds `com.unity.pipeline` to `Packages/manifest.json`. If it is already present, this is a no-op. An old package version rejects newer CLI flags (`--detach`, `--query`, `--limit`) with "does not support". Run `unity pipeline upgrade --project-path <root>` and restart the editor.
 
 ### 4. Write the reference doc
 
@@ -82,11 +85,18 @@ On a display less machine never launch the GUI editor: it hangs in AppKit startu
 
 ## Drive it
 
-Once a headless editor is running for the project:
+Once a headless editor is running for the project. Set these once per shell:
+
+```bash
+export UNITY_PROJECT_PATH=<root>   # replaces --project-path on every call
+export UNITY_NO_PAGER=1            # long output opens `less` and blocks an agent
+export UNITY_NON_INTERACTIVE=1
+```
 
 ```bash
 # discover the tools this editor exposes
 unity command --project-path <root>
+unity command --query asset --limit 10 --project-path <root>   # filter the list
 
 # built in commands
 unity command create_gameobject --name Spawner --components Light --project-path <root>
@@ -99,9 +109,15 @@ unity command eval_file snippet.cs --project-path <root>
 
 # tests and builds
 unity command run_tests --project-path <root>
+
+# long work: detach, then wait
+unity command bake_lighting --detach --json --project-path <root>   # prints a jobId
+unity job wait <jobId> --json
 ```
 
-Prefer `--project-path`. `unity pipeline list` may report a batchmode editor as "not reachable" even while commands work; trust `unity command`, not the list.
+Exit codes: `0` ok, `2` usage error, `6` command failed (compile error in eval, no editor reachable, tests failed), `130` Ctrl+C, `143` SIGTERM.
+
+Prefer `--project-path` or `UNITY_PROJECT_PATH`. `unity pipeline list` and `unity editors running` can show zero rows while batchmode editors answer commands; trust `unity command`, not the lists.
 
 ### Custom commands
 
@@ -117,10 +133,14 @@ for P in game-alpha puzzle-proto runner-3d; do
 done
 ```
 
+### Without a running editor (CI)
+
+`unity run <project> --command <name> -- <args>` starts a batchmode editor, runs one registered command, and exits. `unity test <project> --report-format junit --coverage` and `unity build <project> --profile <name>` (Unity 6 build profiles, no `--execute-method` needed) cover the rest. See the reference for details.
+
 ## Gotchas
 
 - The CLI is beta and the package is experimental (`-exp`). Expect churn between versions.
-- Stale Unity Hub keychain items can make every CLI command hang on an invisible GUI keychain prompt (`--non-interactive` hangs too). Clear the stale keychain items.
+- Stale Unity Hub keychain items make every command that touches auth or licensing hang on an invisible GUI keychain prompt (`unity doctor`, `unity auth status`, `unity run`, `unity projects create`). `--non-interactive` hangs too. `unity command` and `unity job` are not affected. Clear the stale keychain items.
 - `eval` runs arbitrary C# and is gated behind the pipeline server's localhost bearer token by design. Treat it with the same care as running project code.
 
 Full detail lives in `docs/unity-cli-ref.md` after bootstrap, or in `references/unity-cli-ref.md` in this skill.

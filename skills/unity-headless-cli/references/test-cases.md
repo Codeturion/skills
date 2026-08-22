@@ -6,6 +6,48 @@ was backfilled on 2026-07-28: the drive-side commands run daily on this
 rig, and each claim below was re-run on that date. Bootstrap-side steps
 were verified when this machine was set up and are marked as such.
 
+## beta.5 catch-up (RE-RUN 2026-08-22)
+
+Rig: Unity CLI 1.0.0-beta.5, same editor version. Two editors: a real
+project on com.unity.pipeline 0.4.0-exp.1, and a scratch project on
+0.5.0-exp.1 launched with `Unity -batchmode -projectPath <p> -logFile <l>`.
+
+- [x] `UNITY_PROJECT_PATH=<p> unity command eval "return Application.unityVersion;"`
+      works with no `--project-path` flag
+- [x] `unity command eval "return nope;"` exits 6 (compile error)
+- [x] `unity command eval ...` with no editor running exits 6
+- [x] `unity --format bogus editors list` exits 2 (usage error)
+- [x] `--json`, `--no-pager`, `UNITY_NO_PAGER` are in `--help` of every command
+- [x] `unity command --query gameobject --limit 3` filters the list on
+      0.5.0. On 0.4.0 the same call fails: "does not support the listing
+      flags. Update the package with unity pipeline install."
+- [x] `unity command eval --code "..." --detach --json` returns a jobId
+      on 0.5.0. On 0.4.0: "does not support detached jobs."
+- [x] `unity job status <id>` shows running, `unity job wait <id> --json`
+      blocks and returns the command result (42). `unity job cancel`
+      exists in `--help`, not run.
+- [x] `unity pipeline list-versions` lists 0.5.0-exp.1 as latest;
+      `unity pipeline upgrade --project-path` exists
+- [x] `unity editors running` and `unity pipeline list` both returned
+      ZERO rows with two batchmode editors answering commands. The
+      "trust unity command, not the list" gotcha now covers both.
+- [x] `brew info --cask unity-cli` resolves (showed 1.0.0-beta.6)
+- [x] `unity test --help` shows `--report-format nunit|junit`,
+      `--junit-output`, `--coverage`, `--coverage-output`
+- [x] `unity build --help` shows `--profile` and marks
+      `--execute-method` optional
+- [x] `unity run --help` shows `--command <name>` with args after `--`
+
+### Not verified (2026-08-22)
+
+- `unity run <project> --command eval -- --code "..."`: hung for 6 min
+  with no editor process spawned. `unity doctor` and `unity auth status`
+  hang the same way on this rig: the stale-keychain gotcha. Documented
+  from `--help` only. Re-run after the keychain is cleaned.
+- `unity projects create`: hung the same way.
+- `unity test --coverage`, `unity build --profile`: not run, documented
+  from `--help`.
+
 ## Drive commands (RE-RUN 2026-07-28)
 
 - [x] `unity --version` → `1.0.0-beta.2`
