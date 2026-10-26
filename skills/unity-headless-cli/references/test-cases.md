@@ -1,12 +1,119 @@
 # Verification record
 
-Rig: Unity 6000.3.10f1 batchmode editor on macOS arm64 (M2 Pro), Unity CLI
-1.0.0-beta.2, com.unity.pipeline, real production project. This record
-was backfilled on 2026-07-28: the drive-side commands run daily on this
-rig, and each claim below was re-run on that date. Bootstrap-side steps
-were verified when this machine was set up and are marked as such.
+Newest section first. Older sections keep the command names of their
+date; from 0.9.0-exp.1 on, every command is `<group> <name>`.
 
-## beta.5 catch-up (RE-RUN 2026-08-22)
+## Package 0.9.0-exp.1 catch-up (RE-RUN 2026-10-27)
+
+Rig: Unity 6000.3.10f1 batchmode editor (`-batchmode -nographics`,
+no `-quit`) on macOS arm64, scratch project created with `-createProject`,
+`unity pipeline install --package-version 0.9.0-exp.1`. Unity CLI
+1.0.0-beta.8 (`~/.unity/bin/unity`, curl install). The brew cask is
+beta.6, the CDN latest-beta.json says beta.14. The CLI upgrade is a
+machine change and was NOT done for this record.
+
+Grouped commands, all exit 0 with the expected result:
+
+- [x] `script eval "return 2+2;"` returns 4; `script eval_file <file>`
+      returns the file's value
+- [x] `gameobject create --name Spawner` creates `/Spawner`.
+      NOTE: `--components` no longer exists ("gameobject has no
+      parameter --components", exit 2). Removed from the docs. Add
+      components with `component add`.
+- [x] `component add --target Spawner --type Rigidbody` (and `Light`)
+- [x] `asset find --name MyPipelineCommands` returns path, GUID, type
+- [x] `gameobject delete --target Spawner`
+- [x] `test list`, `test run --mode EditMode` (0 tests, Summary block),
+      `test run --mode PlayMode --async_tests` (result "running"),
+      `test status` ("completed"), `test cancel` ("cancelled")
+- [x] `lighting bake --detach --json` returns a jobId; `unity job wait
+      <id> --json` returns `"command": "lighting bake"`
+- [x] `script recompile` ("up_to_date"), `script.methodreload status`
+      ("Method Reload Status", the new name)
+- [x] `editor status` (ready, playMode, runInBackground fields),
+      `editor set_auto_tick --enable true`,
+      `editor.playmode set_run_in_background --enable true`,
+      `editor.playmode start` (status "playing"), `editor.playmode stop`
+      NOTE: the switch is `--enable`, not `--enabled` (exit 2 with a
+      "Did you mean --enable?" hint).
+- [x] `build list_platforms` lists installed platforms with ids
+- [x] `capture screenshot` answers (success:false, "No camera found",
+      scratch scene has no camera; the command itself resolves)
+- [x] `unity command script` lists the group with full names and the
+      `script.methodreload` subgroup. `unity command --query gameobject
+      --limit 3` filters.
+- [x] `--omit-nulls` drops `"output":null` from the eval result.
+      `--verbose` and `--timeout 5` are accepted on beta.8 (both are also
+      global CLI flags there, so no visible change on a passing call).
+
+Old names:
+
+- [x] `unity command create_gameobject --name Old` exits 6: "Command Not
+      Found. No command named 'create_gameobject' is available. It was
+      renamed: run 'unity command gameobject create'."
+- [x] `unity command eval "return 2+2;"` STILL RUNS (bare name that
+      matches exactly one command). Documented as a trap, not a feature:
+      always write the group.
+- [x] `unity command --obsolete-command-names` on beta.8: flag ignored,
+      prints the plain list. The list on beta.8 shows bare names with no
+      group column. The server endpoint
+      `/api/commands?detail=obsolete_names` returns 170 rows, same as
+      `Editor/ObsoleteCommandNames.json` in the package tarball.
+
+Custom commands (file in `Assets/Editor`, no asmdef):
+
+- [x] `[CliCommand("mytool", "validate_content", "...", MainThreadRequired = false)]`
+      runs as `unity command mytool validate_content --strict true`
+      (returns 1); `[CliCommand("mytool", "spawn_marker", "...")]` as
+      `mytool spawn_marker --name Waypoint` (creates the object)
+- [x] `[CliCommand("legacy_ping", "...")]` (two arguments) compiles with
+      `warning CS0618: ... obsolete: 'Name the command's group:
+      [CliCommand(group, name, description)]. With only a name the
+      command is registered in the 'global' group.'` and runs as both
+      `unity command legacy_ping` and `unity command global legacy_ping`
+- [x] The namespace is still `Unity.Pipeline.Commands`; the assembly is
+      `Unity.Pipeline.Attributes`. `using Unity.Pipeline.Attributes;`
+      fails with CS0234. There is no `[MainThreadRequired]` attribute
+      type in 0.9.0: it is a property of `CliCommand`. The old example
+      in this skill used the attribute form and was fixed.
+- [x] A compile error in `Assets/Editor` made the batchmode editor exit
+      during start-up with only `error CS...` lines in the log and no
+      pipeline descriptor. Added as a gotcha.
+
+Server:
+
+- [x] `curl http://127.0.0.1:7801/api/status` with the bearer token: 200.
+      Same request to `http://localhost:7801`: 400. Same request to
+      127.0.0.1 with `Host: evil.test`: 400 "Bad Request (Invalid host)".
+- [x] The descriptor `Library/Pipeline/.unity-pipeline-port` carries
+      `capabilities` including `commands.obsoleteNames` and an
+      `endpoints` list.
+
+Observed, not in the docs:
+
+- `script eval "return nope;"` exits 0 on CLI beta.8 with
+  `"success":false,"error":"Compilation Failed"` inside the result. The
+  2026-08-22 record saw exit 6 on beta.5. Treat the exit code of eval
+  compile errors as CLI-version dependent and parse the JSON.
+- `unity pipeline list-versions` listed 0.9.1-exp.1 (2026-10-22) as
+  latest on the record date. Its changelog un-deprecates the
+  two-argument `[CliCommand]`: a dotted name is read as group plus name.
+  The rename table is identical to 0.9.0. Not run.
+
+### Not verified (2026-10-27)
+
+- Unity CLI 1.0.0-beta.14: not installed. `--obsolete-command-names`
+  output, and the grouped `unity command` listing, are documented from
+  the package docs and the 0.9.0 changelog only.
+- `unity run --command`: still hangs on this rig (see 2026-08-22). Not
+  re-run.
+- Play Mode runtime server listed in the Editor descriptor: not checked,
+  not claimed in the docs.
+- The Addressables snippets were not re-run on 0.9.0; see that skill's
+  record.
+
+
+## beta.5 catch-up (RE-RUN 2026-08-22, flat command names of 0.5.0)
 
 Rig: Unity CLI 1.0.0-beta.5, same editor version. Two editors: a real
 project on com.unity.pipeline 0.4.0-exp.1, and a scratch project on

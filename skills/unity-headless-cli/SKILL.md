@@ -5,7 +5,7 @@ description: Use when the user wants to "set up headless Unity", "drive Unity fr
 
 # Unity Headless CLI: setup and use
 
-This skill has two jobs. First, **bootstrap** the current project so it can be driven headless. Second, **drive** it with `unity command` / `unity command eval`. Round trips are 200 to 600 ms with no recompile and no domain reload.
+This skill has two jobs. First, **bootstrap** the current project so it can be driven headless. Second, **drive** it with `unity command` / `unity command script eval`. Round trips are 200 to 600 ms with no recompile and no domain reload.
 
 If the project already looks set up (CLAUDE.md points at `docs/unity-cli-ref.md` and the package is present), skip the bootstrap and go straight to "Drive it".
 
@@ -40,7 +40,7 @@ The CLI is machine level, so never install it silently. If the user declines, st
 unity pipeline install --project-path <root>
 ```
 
-This adds `com.unity.pipeline` to `Packages/manifest.json`. If it is already present, this is a no-op. An old package version rejects newer CLI flags (`--detach`, `--query`, `--limit`) with "does not support". Run `unity pipeline upgrade --project-path <root>` and restart the editor.
+This adds `com.unity.pipeline` to `Packages/manifest.json`. If it is already present, this is a no-op. This skill needs 0.9.0-exp.1 or newer. To pin a version: `unity pipeline install --package-version 0.9.0-exp.1 --project-path <root>`. An old package version rejects newer CLI flags (`--detach`, `--query`, `--limit`) with "does not support". Run `unity pipeline upgrade --project-path <root>` and restart the editor.
 
 ### 4. Write the reference doc
 
@@ -67,8 +67,9 @@ Section to add:
 ## Headless Unity CLI
 
 This project can be driven headless from the terminal (no GUI, no MCP server) via the
-Unity CLI + `com.unity.pipeline`. Commands: `unity command <tool> --project-path <p>`
-and `unity command eval "<C#>" --project-path <p>`. Full reference, install, custom
+Unity CLI + `com.unity.pipeline` 0.9.0-exp.1 or newer. Every command has a group:
+`unity command <group> <name> --project-path <p>`, for example
+`unity command script eval "<C#>" --project-path <p>`. Full reference, install, custom
 commands, and gotchas: [docs/unity-cli-ref.md](docs/unity-cli-ref.md).
 ```
 
@@ -97,21 +98,22 @@ export UNITY_NON_INTERACTIVE=1
 # discover the tools this editor exposes
 unity command --project-path <root>
 unity command --query asset --limit 10 --project-path <root>   # filter the list
+unity command script --project-path <root>                       # list one group
 
 # built in commands
-unity command create_gameobject --name Spawner --components Light --project-path <root>
-unity command add_component --target Spawner --type Rigidbody --project-path <root>
-unity command find_assets --name GameConfig --project-path <root>   # or --type <TypeName> / --label <label>
+unity command gameobject create --name Spawner --project-path <root>
+unity command component add --target Spawner --type Rigidbody --project-path <root>
+unity command asset find --name GameConfig --project-path <root>   # or --type <TypeName> / --label <label>
 
 # live C# on the editor main thread
-unity command eval "return Application.unityVersion;" --project-path <root>
-unity command eval_file snippet.cs --project-path <root>
+unity command script eval "return Application.unityVersion;" --project-path <root>
+unity command script eval_file snippet.cs --project-path <root>
 
 # tests and builds
-unity command run_tests --project-path <root>
+unity command test run --project-path <root>
 
 # long work: detach, then wait
-unity command bake_lighting --detach --json --project-path <root>   # prints a jobId
+unity command lighting bake --detach --json --project-path <root>   # prints a jobId
 unity job wait <jobId> --json
 ```
 
@@ -119,9 +121,17 @@ Exit codes: `0` ok, `2` usage error, `6` command failed (compile error in eval, 
 
 Prefer `--project-path` or `UNITY_PROJECT_PATH`. `unity pipeline list` and `unity editors running` can show zero rows while batchmode editors answer commands; trust `unity command`, not the lists.
 
+### Package 0.9 and newer
+
+- Every command has a group. Write `unity command <group> <name>`, for example `unity command script eval`. Old names that no longer exist (`create_gameobject`, `run_tests`) are refused, and the error names the new command. A bare name that still matches exactly one command (`eval`) runs, but a new command can make it ambiguous, so always write the group.
+- Minimum package: `com.unity.pipeline` 0.9.0-exp.1. Pin it with `unity pipeline install --package-version 0.9.0-exp.1 --project-path <root>`, then restart the editor.
+- The full rename table (170 names) ships in the package as `Editor/ObsoleteCommandNames.json`. With Unity CLI 1.0.0-beta.14 or newer, `unity command --obsolete-command-names --project-path <root>` prints it. Older CLIs ignore the flag and print the plain list.
+- A CLI older than beta.14 lists bare names with no group in `unity command`. `unity command <group>` lists one group with full names.
+- The pipeline server answers only on `127.0.0.1`. Use the IP, not `localhost`. A request with another Host header is refused.
+
 ### Custom commands
 
-Any static method tagged `[CliCommand]` in an Editor assembly becomes a tool automatically, no registration. Use `MainThreadRequired` for anything touching engine state; `RuntimeOnly` for dev-Player-only commands.
+Any static method tagged `[CliCommand(group, name, description)]` in an Editor assembly becomes a command, no registration. Reference the `Unity.Pipeline.Attributes` assembly if the code lives in an asmdef. The two-argument form `[CliCommand(name, description)]` is deprecated in 0.9.0: it lands in the `global` group. Set `MainThreadRequired = false` only for pure C#. For dev-Player-only commands, set `Tags = new[] { "runtime" }` (`RuntimeOnly` is gone). Example in the reference.
 
 ### Many projects
 
@@ -129,7 +139,7 @@ The same terminal drives any project. Loop:
 
 ```bash
 for P in game-alpha puzzle-proto runner-3d; do
-  unity command create_gameobject --name Spawner --project-path "$P"
+  unity command gameobject create --name Spawner --project-path "$P"
 done
 ```
 
@@ -139,7 +149,8 @@ done
 
 ## Gotchas
 
-- The CLI is beta and the package is experimental (`-exp`). Expect churn between versions.
+- The CLI is beta and the package is experimental (`-exp`). Expect churn between versions. Package 0.9.0 renamed every command (see above).
+- A compile error in a project script stops a batchmode editor at start-up. If `unity command` never answers, grep the editor log for `error CS`.
 - Commands that go through the auth or licensing layer can hang with no output: `unity doctor`, `unity auth status`, `unity license status`, `unity run`, `unity projects create`. `--non-interactive` hangs too. Seen on a headless Mac with Unity Hub running; stale Hub keychain items caused the same symptom before. `unity command`, `unity job`, `unity editors list` are not affected. Always wrap these commands in a timeout in scripts.
 - `eval` runs arbitrary C# and is gated behind the pipeline server's localhost bearer token by design. Treat it with the same care as running project code.
 
