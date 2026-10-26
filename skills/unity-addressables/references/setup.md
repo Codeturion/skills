@@ -35,7 +35,7 @@ upgrade can silently reset group build and load paths back to Local while
 ## 2. Create the settings asset
 
 Save as `create_settings.cs` and run
-`unity command eval_file create_settings.cs --project-path <root>`:
+`unity command script eval_file create_settings.cs --project-path <root>`:
 
 ```csharp
 // Create AddressableAssetSettings if the project has none (idempotent).

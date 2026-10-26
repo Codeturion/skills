@@ -13,7 +13,7 @@ daily use, builds, and remote content. Everything runs headless. No menu paths.
 
 - Unity 6 (verified on 6000.3) and Addressables 2.x or 3.x (verified on
   2.9.0 and 3.1.0).
-- The Unity CLI with a running headless editor, so `unity command eval` works.
+- The Unity CLI with a running headless editor, so `unity command script eval` works.
   If the project is not set up for that yet, use the **unity-headless-cli** skill first.
 - To add the package headless, use the **unity-package-management** skill, or
   follow the latest-version lookup in [references/setup.md](references/setup.md).
@@ -55,13 +55,13 @@ Never assume the project's Addressables layout. Get ground truth first.
   ```
 
 - **Full scan, via the editor.** Query `AddressableAssetSettings` with
-  `unity command eval` for groups, local or remote schemas, and duplicate
+  `unity command script eval` for groups, local or remote schemas, and duplicate
   addresses. Ready snippets are in
   [references/groups-and-labels.md](references/groups-and-labels.md).
 - If `docs/addressables.md` exists in the project, read it for the intended
   layout, then confirm with a scan. Update it after changes.
 
-**Eval gotcha:** code passed to `unity command eval` compiles as a method body.
+**Eval gotcha:** code passed to `unity command script eval` compiles as a method body.
 `using` directives are not allowed there. Fully qualify every name
 (`UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings`).
 

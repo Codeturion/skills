@@ -17,7 +17,7 @@ in one call.
 
 ## Create a group and add entries (headless)
 
-Save and run with `unity command eval_file <file> --project-path <root>`:
+Save and run with `unity command script eval_file <file> --project-path <root>`:
 
 ```csharp
 // Create a group, add an asset entry by GUID, set address and a label.

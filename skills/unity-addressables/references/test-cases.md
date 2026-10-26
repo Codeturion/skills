@@ -10,6 +10,22 @@ Everything this skill claims was executed before the PR opened. Environment:
 - A production-scale Unity 6 project with the same Addressables version was
   used as the reference for the group strategy and CDN invariants
 
+## Command names re-checked for com.unity.pipeline 0.9.0-exp.1 (2026-10-27)
+
+Package 0.9.0 groups every command. The snippets in this skill now use
+`unity command script eval`, `script eval_file`, `test run`, `test status`
+and `test cancel`. Checked on a scratch project (Unity 6000.3.10f1
+batchmode, pipeline 0.9.0-exp.1, Unity CLI 1.0.0-beta.8), no Addressables
+package installed:
+
+- [x] `script eval_file <file>` runs a file and returns its value
+- [x] `test run --mode PlayMode --async_tests` returns "running",
+      `test status` returns "completed", `test cancel` returns
+      "cancelled"
+- [ ] The Addressables snippets themselves (create_settings, groups,
+      scan, content build) were NOT re-run on 0.9.0. Their last full run
+      is the 0.4.0-exp.1 record below. Only the command names changed.
+
 ## Setup and groups
 
 | Claim | How verified | Result |

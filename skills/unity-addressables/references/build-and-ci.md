@@ -9,7 +9,7 @@ missing bundles.
 
 ## Build content headless
 
-Save and run with `unity command eval_file <file> --project-path <root>`:
+Save and run with `unity command script eval_file <file> --project-path <root>`:
 
 ```csharp
 // Build Addressables content headless; report success or the error.
@@ -86,9 +86,9 @@ The test assembly (asmdef) needs references to `UnityEngine.TestRunner`,
 async. Entering play mode reloads the domain and drops a synchronous request.
 
 ```bash
-unity command run_tests --mode PlayMode --async_tests --project-path <root>
+unity command test run --mode PlayMode --async_tests --project-path <root>
 # poll until "status": "completed"
-unity command test_status --project-path <root>
+unity command test status --project-path <root>
 ```
 
 EditMode tests run fine synchronously.
@@ -99,7 +99,7 @@ EditMode tests run fine synchronously.
   run, with nothing changing in between. If the packed data is stale, play
   mode entry fails ("Player content must be built before entering play mode
   with packed data"), and the async test run then stays "running" forever.
-  Recover with `unity command cancel_tests`.
+  Recover with `unity command test cancel`.
 - A cancelled play mode run can leave a dirty unsaved scene. The next content
   build then fails with `Unsaved scenes`. Recover by opening a fresh empty
   scene, then rebuild:
